@@ -1,24 +1,109 @@
+/// <reference path="../types/express.d.ts" />
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { verifyToken } from '../services/authService';
 
-// Defina a sua chave secreta em um arquivo .env
-const SECRET_KEY = 'YOUR_SECRET_KEY';
+// 🔐 Interface para request autenticado
+interface AuthenticatedRequest extends Request {
+  user?: {
+    userId: number;
+    email: string;
+    name: string;
+  };
+}
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  const authHeader = req.headers.authorization;
+// 🛡️ Middleware de autenticação JWT
+export const authenticateToken = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): void => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    res.status(401).json({ message: 'Acesso negado. Nenhum token fornecido.' });
+  console.log('🔐 Auth Middleware:', {
+    hasAuthHeader: !!authHeader,
+    hasToken: !!token,
+    url: req.url,
+    method: req.method
+  });
+
+  if (!token) {
+    console.log('❌ Auth Failed - No token provided');
+    res.status(401).json({
+      success: false,
+      error: 'Token de acesso requerido'
+    });
     return;
   }
 
-  const token = authHeader.split(' ')[1];
-
   try {
-    const decoded = jwt.verify(token, SECRET_KEY);
-    req.user = decoded as { userId: number; name: string };
+    const decoded = verifyToken(token);
+    
+    if (!decoded) {
+      console.log('❌ Auth Failed - Invalid token');
+      res.status(403).json({
+        success: false,
+        error: 'Token inválido'
+      });
+      return;
+    }
+
+    // 📊 Adicionar dados do usuário ao request
+    req.user = {
+      userId: decoded.userId,
+      email: decoded.email,
+      name: decoded.name
+    };
+
+    console.log('✅ Auth Success:', {
+      userId: decoded.userId,
+      email: decoded.email
+    });
+
     next();
   } catch (error) {
-    res.status(401).json({ message: 'Token inválido.' });
+    console.error('❌ Auth Error:', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+
+    res.status(403).json({
+      success: false,
+      error: 'Token inválido'
+    });
   }
 };
+
+// 🔍 Middleware opcional de autenticação (não bloqueia se não tiver token)
+export const optionalAuth = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): void => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    // Se não tiver token, continua sem user
+    next();
+    return;
+  }
+
+  try {
+    const decoded = verifyToken(token);
+    if (decoded) {
+      req.user = {
+        userId: decoded.userId,
+        email: decoded.email,
+        name: decoded.name
+      };
+    }
+  } catch (error) {
+    // Se token for inválido, apenas ignora
+    console.log('🔍 Optional auth - invalid token ignored');
+  }
+
+  next();
+};
+
+// 🎯 Export do tipo para usar em outros arquivos
+export type { AuthenticatedRequest };

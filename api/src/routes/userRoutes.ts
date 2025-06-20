@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { createUserController, getAllUsers } from '../controllers/userController';
-import { authMiddleware } from '../middlewares/authMiddleware';
+import { authenticateToken } from '../middlewares/authMiddleware';
 
 const router = Router();
 
@@ -8,6 +8,6 @@ const router = Router();
 router.post('/', createUserController);
 
 // A rota para obter todos os usuários agora está protegida pelo middleware
-router.get('/', authMiddleware, getAllUsers);
+router.get('/', authenticateToken, getAllUsers);
 
 export default router;

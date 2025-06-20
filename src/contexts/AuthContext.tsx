@@ -1,1 +1,154 @@
-'use client';\n\nimport React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';\nimport { useRouter } from 'next/navigation';\n\n// Tipagem para os dados do usuário e do contexto\ninterface User {\n  id: number;\n  name: string;\n  email: string;\n}\n\ninterface AuthContextType {\n  user: User | null;\n  token: string | null;\n  login: (email: string, password: string) => Promise<boolean>;\n  logout: () => void;\n  isLoading: boolean;\n  error: string | null;\n}\n\n// Cria o contexto com um valor padrão undefined\nconst AuthContext = createContext<AuthContextType | undefined>(undefined);\n\n// Componente Provedor do Contexto\nexport const AuthProvider = ({ children }: { children: ReactNode }) => {\n  const [user, setUser] = useState<User | null>(null);\n  const [token, setToken] = useState<string | null>(null);\n  const [isLoading, setIsLoading] = useState(true);\n  const [error, setError] = useState<string | null>(null);\n  const router = useRouter();\n\n  useEffect(() => {\n    // Tenta carregar o token e os dados do usuário do localStorage ao iniciar\n    const storedToken = localStorage.getItem('authToken');\n    const storedUser = localStorage.getItem('authUser');\n    if (storedToken && storedUser) {\n      setToken(storedToken);\n      setUser(JSON.parse(storedUser));\n    }\n    setIsLoading(false);\n  }, []);\n\n  const login = async (email: string, password: string): Promise<boolean> => {\n    setIsLoading(true);\n    setError(null);\n    try {\n      const response = await fetch('/api/auth/login', { // O endpoint do nosso backend\n        method: 'POST',\n        headers: { 'Content-Type': 'application/json' },\n        body: JSON.stringify({ email, password }),\n      });\n\n      if (!response.ok) {\n        const errorData = await response.json();\n        throw new Error(errorData.message || 'Falha no login');\n      }\n\n      const data = await response.json();\n      setToken(data.token);\n      setUser(data.user);\n\n      // Armazena no localStorage para persistir a sessão\n      localStorage.setItem('authToken', data.token);\n      localStorage.setItem('authUser', JSON.stringify(data.user));\n      \n      return true;\n    } catch (err: any) {\n      setError(err.message);\n      return false;\n    } finally {\n      setIsLoading(false);\n    }\n  };\n\n  const logout = () => {\n    setUser(null);\n    setToken(null);\n    localStorage.removeItem('authToken');\n    localStorage.removeItem('authUser');\n    router.push('/login');\n  };\n\n  const value = {\n    user,\n    token,\n    login,\n    logout,\n    isLoading,\n    error,\n  };\n\n  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;\n};\n\n// Hook customizado para usar o contexto de autenticação\nexport const useAuth = () => {\n  const context = useContext(AuthContext);\n  if (context === undefined) {\n    throw new Error('useAuth deve ser usado dentro de um AuthProvider');\n  }\n  return context;\n};\n 
+'use client';
+
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+
+// 🔐 Tipos para autenticação
+interface User {
+  id: number;
+  email: string;
+  name: string;
+}
+
+interface LoginData {
+  email: string;
+  password: string;
+}
+
+interface AuthResponse {
+  success: boolean;
+  data?: {
+    user: User;
+    token: string;
+  };
+  error?: string;
+}
+
+interface AuthContextType {
+  user: User | null;
+  token: string | null;
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  login: (data: LoginData) => Promise<AuthResponse>;
+  logout: () => void;
+  checkAuth: () => void;
+}
+
+// 🎯 Configuração da API
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
+// 📊 Context
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// 🛡️ Provider do contexto de autenticação
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 🔍 Verifica se usuário está autenticado
+  const isAuthenticated = !!user && !!token;
+
+  // 🔐 Função de login
+  const login = async (data: LoginData): Promise<AuthResponse> => {
+    try {
+      console.log('🔐 Attempting login:', { email: data.email });
+      
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (result.success && result.data) {
+        console.log('✅ Login successful:', { user: result.data.user });
+        
+        // 💾 Salvar dados no localStorage
+        localStorage.setItem('token', result.data.token);
+        localStorage.setItem('user', JSON.stringify(result.data.user));
+        
+        // 📊 Atualizar estado
+        setToken(result.data.token);
+        setUser(result.data.user);
+        
+        return result;
+      } else {
+        console.log('❌ Login failed:', result.error);
+        return result;
+      }
+    } catch (error) {
+      console.error('❌ Login error:', error);
+      return {
+        success: false,
+        error: 'Erro de conexão com o servidor'
+      };
+    }
+  };
+
+  // 🚪 Função de logout
+  const logout = () => {
+    console.log('🚪 Logging out user');
+    
+    // 🗑️ Limpar localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    
+    // 📊 Limpar estado
+    setToken(null);
+    setUser(null);
+  };
+
+  // 🔍 Verificar autenticação no carregamento
+  const checkAuth = () => {
+    try {
+      const savedToken = localStorage.getItem('token');
+      const savedUser = localStorage.getItem('user');
+
+      if (savedToken && savedUser) {
+        console.log('🔍 Found saved auth data');
+        setToken(savedToken);
+        setUser(JSON.parse(savedUser));
+      } else {
+        console.log('🔍 No saved auth data found');
+      }
+    } catch (error) {
+      console.error('❌ Error checking auth:', error);
+      logout(); // Limpar dados corrompidos
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 🚀 Verificar autenticação na inicialização
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const value: AuthContextType = {
+    user,
+    token,
+    isLoading,
+    isAuthenticated,
+    login,
+    logout,
+    checkAuth
+  };
+
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+// 🎯 Hook para usar o contexto
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+} 
