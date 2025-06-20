@@ -1,0 +1,369 @@
+---
+description: "Estratégias de teste e validação baseadas na metodologia THINK"
+globs: ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"]
+alwaysApply: true
+---
+
+# 🧪 ESTRATÉGIA DE TESTES - PIRÂMIDE MODERNA
+
+## 📊 TESTING PYRAMID OBRIGATÓRIO
+
+```
+                    🔺
+                   /E2E\
+                  /Tests\    (5-10%)
+                 /_______\
+                /         \
+               /Integration\  (20-30%)
+              /    Tests    \
+             /_____________\
+            /               \
+           /   Unit Tests    \  (60-70%)
+          /_________________\
+```
+
+## 🔬 UNIT TESTS (60-70%)
+
+### ✅ **Padrões Obrigatórios**
+```typescript
+// ✅ CORRETO: Teste defensivo com edge cases
+describe('processApiResponse', () => {
+  it('should handle null response gracefully', () => {
+    const result = processApiResponse(null);
+    expect(result.data).toEqual([]);
+    expect(result.meta.error).toBeDefined();
+  });
+  
+  it('should handle empty response gracefully', () => {
+    const result = processApiResponse({});
+    expect(result.data).toEqual([]);
+    expect(result.meta.processedAt).toBeDefined();
+  });
+  
+  it('should normalize array data correctly', () => {
+    const response = { data: [{ id: 1 }, { id: 2 }] };
+    const result = processApiResponse(response);
+    expect(result.data).toHaveLength(2);
+    expect(result.meta.count).toBe(2);
+  });
+  
+  it('should convert single object to array', () => {
+    const response = { data: { id: 1 } };
+    const result = processApiResponse(response);
+    expect(result.data).toHaveLength(1);
+    expect(result.data[0]).toEqual({ id: 1 });
+  });
+  
+  it('should handle malformed data with fallback', () => {
+    const response = { items: [{ id: 1 }] }; // Different structure
+    const result = processApiResponse(response);
+    expect(result.data).toHaveLength(1);
+  });
+});
+```
+
+### 🎯 **Cenários Obrigatórios para Testar**
+- ✅ **Happy Path**: Cenário ideal funcionando
+- ✅ **Empty Data**: Arrays/objetos vazios
+- ✅ **Null/Undefined**: Dados ausentes
+- ✅ **Malformed Data**: Estruturas diferentes do esperado
+- ✅ **Error Cases**: Exceções e falhas
+- ✅ **Edge Cases**: Valores extremos
+
+## 🔗 INTEGRATION TESTS (20-30%)
+
+### ✅ **Padrões para Serviços**
+```typescript
+// ✅ CORRETO: Teste de integração com mocks
+describe('ReservationService Integration', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should create reservation with credit deduction', async () => {
+    // Arrange
+    const mockReservation = { id: 1, status: 'CONFIRMADO' };
+    mockApiClient.post('/reservations').reply(201, mockReservation);
+    mockApiClient.patch('/credits/deduct').reply(200, { newBalance: 50 });
+    
+    // Act
+    const result = await reservationService.create({
+      userId: 1,
+      serviceId: 1,
+      dateTime: '2024-12-25T10:00:00Z'
+    });
+    
+    // Assert
+    expect(result.reservation).toMatchObject(mockReservation);
+    expect(mockApiClient.history.post).toHaveLength(1);
+    expect(mockApiClient.history.patch).toHaveLength(1);
+    
+    // Verify API calls
+    const reservationCall = mockApiClient.history.post[0];
+    expect(JSON.parse(reservationCall.data)).toMatchObject({
+      userId: 1,
+      serviceId: 1
+    });
+  });
+
+  it('should handle API failure gracefully', async () => {
+    // Arrange
+    mockApiClient.post('/reservations').reply(500, { error: 'Server Error' });
+    
+    // Act & Assert
+    await expect(reservationService.create(mockData))
+      .rejects
+      .toThrow('Failed to create reservation');
+    
+    // Verify no credit deduction on failure
+    expect(mockApiClient.history.patch).toHaveLength(0);
+  });
+});
+```
+
+### 🎯 **Cenários de Integração**
+- ✅ **API Success Flow**: Fluxo completo funcionando
+- ✅ **API Failure Handling**: Falhas de rede/servidor
+- ✅ **Authentication Issues**: Token inválido/expirado
+- ✅ **Rate Limiting**: Muitas requisições
+- ✅ **Data Consistency**: Estado sincronizado entre serviços
+
+## 🎭 E2E TESTS (5-10%)
+
+### ✅ **Fluxos Críticos de Usuário**
+```typescript
+// ✅ CORRETO: Teste E2E de fluxo completo
+describe('Reservation Flow E2E', () => {
+  it('should complete full reservation process', async () => {
+    // Login
+    await page.goto('/client/login');
+    await page.fill('[data-testid="email"]', 'user@test.com');
+    await page.fill('[data-testid="password"]', 'password123');
+    await page.click('[data-testid="login-button"]');
+    
+    // Navigate to calendar
+    await expect(page.locator('[data-testid="dashboard"]')).toBeVisible();
+    await page.click('[data-testid="calendar-link"]');
+    
+    // Select date and time
+    await page.click('[data-date="2024-12-25"]');
+    await page.click('[data-time="10:00"]');
+    
+    // Confirm reservation
+    await page.click('[data-testid="confirm-reservation"]');
+    
+    // Verify success
+    await expect(page.locator('[data-testid="success-message"]'))
+      .toContainText('Reserva confirmada com sucesso');
+    
+    // Verify credit deduction
+    await expect(page.locator('[data-testid="credit-balance"]'))
+      .toContainText('49'); // Assuming 1 credit deducted
+  });
+
+  it('should handle insufficient credits gracefully', async () => {
+    // Setup user with 0 credits
+    await setupUserWithCredits(0);
+    
+    await page.goto('/client/calendar');
+    await page.click('[data-date="2024-12-25"]');
+    await page.click('[data-time="10:00"]');
+    await page.click('[data-testid="confirm-reservation"]');
+    
+    // Verify error message
+    await expect(page.locator('[data-testid="error-message"]'))
+      .toContainText('Créditos insuficientes');
+    
+    // Verify no reservation created
+    await page.goto('/client/reservations');
+    await expect(page.locator('[data-testid="no-reservations"]'))
+      .toBeVisible();
+  });
+});
+```
+
+## 📋 CHECKLIST DE VALIDAÇÃO
+
+### ✅ **Funcionalidade (OBRIGATÓRIO)**
+- [ ] **Core Feature**: Funcionalidade principal 100% operacional
+- [ ] **Edge Cases**: Cenários extremos cobertos
+- [ ] **Error Handling**: Erros tratados graciosamente
+- [ ] **Input Validation**: Dados inválidos rejeitados adequadamente
+- [ ] **Business Rules**: Regras de negócio respeitadas
+
+### 🚀 **Performance (OBRIGATÓRIO)**
+- [ ] **Loading Time**: < 3s para operações principais
+- [ ] **API Response**: < 500ms para endpoints críticos
+- [ ] **Bundle Size**: Impacto mínimo no tamanho final
+- [ ] **Memory Usage**: Sem vazamentos de memória
+- [ ] **CPU Usage**: Operações eficientes
+
+### 🎨 **UX/UI (OBRIGATÓRIO)**
+- [ ] **Responsive Design**: Funciona em todos os breakpoints
+- [ ] **Touch Interactions**: Suporte adequado para mobile
+- [ ] **Loading States**: Feedbacks visuais durante carregamento
+- [ ] **Error States**: Mensagens claras e acionáveis
+- [ ] **Success States**: Confirmações de ações bem-sucedidas
+
+### ♿ **Accessibility (OBRIGATÓRIO)**
+- [ ] **Keyboard Navigation**: Navegação completa via teclado
+- [ ] **Screen Reader**: ARIA labels e roles adequados
+- [ ] **Color Contrast**: Conformidade com WCAG 2.1 AA
+- [ ] **Focus Management**: Indicadores visuais claros
+- [ ] **Alternative Text**: Imagens com descrições adequadas
+
+### 🔒 **Security (OBRIGATÓRIO)**
+- [ ] **Input Sanitization**: Prevenção de XSS/SQL injection
+- [ ] **Authentication**: Controle de acesso adequado
+- [ ] **Authorization**: Permissões respeitadas
+- [ ] **Data Exposure**: Informações sensíveis protegidas
+- [ ] **Rate Limiting**: Proteção contra abuso
+
+## 🎯 **TESTES POR TIPO DE COMPONENTE**
+
+### 🧩 **React Components**
+```typescript
+// ✅ CORRETO: Teste de componente com todos os estados
+describe('ReservationCard', () => {
+  const mockReservation = {
+    id: 1,
+    service: 'Massagem',
+    date: '2024-12-25',
+    time: '10:00',
+    status: 'CONFIRMADO'
+  };
+
+  it('should render reservation details correctly', () => {
+    render(<ReservationCard reservation={mockReservation} />);
+    
+    expect(screen.getByText('Massagem')).toBeInTheDocument();
+    expect(screen.getByText('25/12/2024')).toBeInTheDocument();
+    expect(screen.getByText('10:00')).toBeInTheDocument();
+  });
+
+  it('should show cancel button for confirmed reservations', () => {
+    render(<ReservationCard reservation={mockReservation} />);
+    
+    expect(screen.getByRole('button', { name: /cancelar/i }))
+      .toBeInTheDocument();
+  });
+
+  it('should not show cancel button for completed reservations', () => {
+    const completedReservation = { ...mockReservation, status: 'CONCLUIDO' };
+    render(<ReservationCard reservation={completedReservation} />);
+    
+    expect(screen.queryByRole('button', { name: /cancelar/i }))
+      .not.toBeInTheDocument();
+  });
+
+  it('should handle cancel action', async () => {
+    const mockOnCancel = jest.fn();
+    render(
+      <ReservationCard 
+        reservation={mockReservation} 
+        onCancel={mockOnCancel} 
+      />
+    );
+    
+    await user.click(screen.getByRole('button', { name: /cancelar/i }));
+    
+    expect(mockOnCancel).toHaveBeenCalledWith(mockReservation.id);
+  });
+});
+```
+
+### 🔧 **Custom Hooks**
+```typescript
+// ✅ CORRETO: Teste de hook customizado
+describe('useReservations', () => {
+  it('should fetch reservations successfully', async () => {
+    const mockReservations = [{ id: 1, status: 'CONFIRMADO' }];
+    mockApiClient.get('/reservations').reply(200, mockReservations);
+    
+    const { result } = renderHook(() => useReservations(1));
+    
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+    
+    expect(result.current.data).toEqual(mockReservations);
+    expect(result.current.error).toBeNull();
+  });
+
+  it('should handle API error gracefully', async () => {
+    mockApiClient.get('/reservations').reply(500, { error: 'Server Error' });
+    
+    const { result } = renderHook(() => useReservations(1));
+    
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+    
+    expect(result.current.error).toBeDefined();
+    expect(result.current.data).toBeUndefined();
+  });
+});
+```
+
+## 🚫 ANTI-PATTERNS EM TESTES
+
+### ❌ **Testes Frágeis**
+```typescript
+// ❌ INCORRETO: Teste dependente de implementação
+expect(component.find('.button-class')).toHaveLength(1);
+
+// ✅ CORRETO: Teste baseado em comportamento
+expect(screen.getByRole('button', { name: /cancelar/i }))
+  .toBeInTheDocument();
+```
+
+### ❌ **Testes sem Assertion**
+```typescript
+// ❌ INCORRETO: Teste que não verifica nada
+it('should call API', () => {
+  service.getData();
+  // Sem verificação!
+});
+
+// ✅ CORRETO: Teste com verificação
+it('should call API with correct parameters', () => {
+  service.getData(userId);
+  expect(mockApiCall).toHaveBeenCalledWith('/users/1');
+});
+```
+
+### ❌ **Testes Acoplados**
+```typescript
+// ❌ INCORRETO: Testes que dependem um do outro
+describe('User Service', () => {
+  let userId;
+  
+  it('should create user', () => {
+    userId = service.createUser(userData);
+    expect(userId).toBeDefined();
+  });
+  
+  it('should get user', () => {
+    const user = service.getUser(userId); // Depende do teste anterior!
+    expect(user).toBeDefined();
+  });
+});
+
+// ✅ CORRETO: Testes independentes
+describe('User Service', () => {
+  beforeEach(() => {
+    // Setup independente para cada teste
+  });
+  
+  it('should create user', () => {
+    const userId = service.createUser(userData);
+    expect(userId).toBeDefined();
+  });
+  
+  it('should get user', () => {
+    const existingUserId = setupExistingUser();
+    const user = service.getUser(existingUserId);
+    expect(user).toBeDefined();
+  });
+});
+``` 

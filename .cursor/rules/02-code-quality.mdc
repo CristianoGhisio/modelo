@@ -1,0 +1,241 @@
+---
+description: "Padrões de qualidade de código e implementação baseados na metodologia THINK"
+globs: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"]
+alwaysApply: true
+---
+
+# 🔧 QUALIDADE DE CÓDIGO - PADRÕES MODERNOS 2024
+
+## ⚡ PRINCÍPIOS FUNDAMENTAIS
+
+### 🎯 **Minimal Viable Fix**
+- Sempre implementar a menor alteração que resolve o problema
+- Evitar over-engineering e soluções complexas desnecessárias
+- Priorizar clareza e simplicidade sobre "cleverness"
+
+### 🔒 **Type Safety First**
+- TypeScript rigoroso + validação runtime
+- Interfaces explícitas para todos os contratos
+- Evitar `any` - usar `unknown` quando necessário
+- Validação de dados na entrada de funções críticas
+
+### 🛡️ **Defensive Programming**
+- Sempre validar inputs e outputs
+- Implementar fallbacks graceful para falhas
+- Nunca assumir que dados externos estão corretos
+- Logging estratégico em pontos críticos
+
+## 📊 PADRÕES DE IMPLEMENTAÇÃO
+
+### 🔍 **Logging Defensivo Obrigatório**
+```typescript
+// ✅ CORRETO: Logging estruturado
+console.log('🔐 Auth Check:', {
+  hasToken: !!token,
+  tokenValid: token?.length > 10,
+  userRoles: user?.roles,
+  timestamp: new Date().toISOString()
+});
+
+// ❌ INCORRETO: Logging sem contexto
+console.log('auth ok');
+```
+
+### 📡 **API Communication Pattern**
+```typescript
+// ✅ CORRETO: Comunicação com logs e tratamento
+const apiCall = async (endpoint: string, data?: any) => {
+  const traceId = generateTraceId();
+  
+  console.log('📡 API Call:', {
+    method: 'POST',
+    endpoint,
+    traceId,
+    payload: sanitizePayload(data)
+  });
+
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    console.log('📥 API Response:', {
+      status: response.status,
+      traceId,
+      success: response.ok
+    });
+
+    return response.json();
+  } catch (error) {
+    console.error('❌ API Error:', {
+      endpoint,
+      error: error.message,
+      traceId
+    });
+    throw error;
+  }
+};
+```
+
+### 🔄 **Data Processing Pattern**
+```typescript
+// ✅ CORRETO: Processamento defensivo
+const processApiResponse = <T>(
+  response: ApiResponse<T>,
+  options: ProcessingOptions = {}
+): ProcessedData<T> => {
+  console.log('🔍 Processing API Response:', {
+    status: response?.status,
+    hasData: !!response?.data,
+    dataType: response?.data ? typeof response.data : 'undefined'
+  });
+
+  try {
+    // Múltiplas estratégias de fallback
+    const rawData = response?.data ?? response?.items ?? response?.result ?? [];
+    
+    // Normalização segura
+    const normalizedData = Array.isArray(rawData) 
+      ? rawData 
+      : [rawData].filter(Boolean);
+    
+    console.log('✅ Processing Success:', {
+      inputType: typeof rawData,
+      outputCount: normalizedData.length
+    });
+    
+    return {
+      data: normalizedData,
+      meta: {
+        processedAt: new Date().toISOString(),
+        count: normalizedData.length
+      }
+    };
+    
+  } catch (error) {
+    console.error('❌ Processing Failed:', {
+      error: error.message,
+      response: sanitizeForLogging(response)
+    });
+    
+    // Fallback graceful
+    return {
+      data: [],
+      meta: {
+        error: error.message,
+        processedAt: new Date().toISOString()
+      }
+    };
+  }
+};
+```
+
+## ⚛️ REACT PATTERNS MODERNOS
+
+### 🎯 **Custom Hooks Pattern**
+```typescript
+// ✅ CORRETO: Hook composável e reutilizável
+const useFeature = (options: UseFeatureOptions = {}) => {
+  const { enabled = true, onSuccess, onError } = options;
+  
+  return useQuery({
+    queryKey: ['feature', options],
+    queryFn: () => featureService.getData(),
+    enabled,
+    retry: 3,
+    staleTime: 5 * 60 * 1000, // 5min
+    onSuccess,
+    onError,
+    meta: {
+      traceId: generateTraceId(),
+      component: 'useFeature'
+    }
+  });
+};
+```
+
+### 🛡️ **Error Boundary Pattern**
+```typescript
+// ✅ CORRETO: Error boundary com logging
+const ErrorBoundaryProvider = ({ children }: PropsWithChildren) => (
+  <ErrorBoundary
+    FallbackComponent={ErrorFallback}
+    onError={(error, errorInfo) => {
+      console.error('Component Error:', {
+        error: error.message,
+        stack: error.stack,
+        componentStack: errorInfo.componentStack,
+        userId: getCurrentUser()?.id,
+        timestamp: new Date().toISOString()
+      });
+    }}
+  >
+    <Suspense fallback={<SkeletonLoader />}>
+      {children}
+    </Suspense>
+  </ErrorBoundary>
+);
+```
+
+## 🚫 ANTI-PATTERNS A EVITAR
+
+### ❌ **Double Data Access**
+```typescript
+// ❌ INCORRETO: Serviço já faz parsing
+const data = JSON.parse(service.getData()); // Serviço já retorna objeto
+
+// ✅ CORRETO: Confiar no serviço
+const data = service.getData();
+```
+
+### ❌ **Undefined Checks Desnecessários**
+```typescript
+// ❌ INCORRETO: Verificação redundante
+if (data && data.length && data.length > 0) {
+  // ...
+}
+
+// ✅ CORRETO: Verificação concisa
+if (data?.length) {
+  // ...
+}
+```
+
+### ❌ **Type Mismatches**
+```typescript
+// ❌ INCORRETO: Assumir tipo sem validação
+const processUser = (user: any) => {
+  return user.name.toUpperCase(); // Pode quebrar
+};
+
+// ✅ CORRETO: Validação de tipo
+const processUser = (user: User) => {
+  if (!user?.name || typeof user.name !== 'string') {
+    console.warn('Invalid user name:', user);
+    return 'Unknown User';
+  }
+  return user.name.toUpperCase();
+};
+```
+
+## 📋 CHECKLIST DE CÓDIGO
+
+### ✅ **Antes de Commit**
+- [ ] Logging implementado em pontos críticos
+- [ ] Tratamento de erro graceful
+- [ ] Types explícitos e validados
+- [ ] Fallbacks para cenários de falha
+- [ ] Performance considerada (evitar re-renders desnecessários)
+- [ ] Accessibility básica (ARIA labels quando necessário)
+- [ ] Mobile responsiveness verificada
+
+### ✅ **Antes de Deploy**
+- [ ] Testes unitários passando
+- [ ] Edge cases cobertos
+- [ ] Error boundaries implementadas
+- [ ] Loading states adequados
+- [ ] Success/error messages claras
+- [ ] Performance < 3s para operações principais
+- [ ] Sem console.logs de debug em produção 

@@ -1,0 +1,797 @@
+---
+description: "Padrões de deployment e produção baseados na metodologia THINK"
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# 🚀 DEPLOYMENT E PRODUÇÃO - PADRÕES ROBUSTOS
+
+## 🎯 PRINCÍPIOS DE DEPLOYMENT
+
+### 🔄 **CI/CD Pipeline**
+- Deployment automatizado e confiável
+- Testes obrigatórios antes de deploy
+- Rollback automático em caso de falha
+- Zero-downtime deployments
+
+### 🌍 **Environment Management**
+- Configuração por ambiente
+- Secrets management adequado
+- Monitoramento em tempo real
+- Health checks automáticos
+
+## 🏗️ DOCKER CONFIGURATION
+
+### 📦 **Dockerfile Otimizado**
+```dockerfile
+# ✅ CORRETO: Multi-stage build otimizado
+# Frontend Dockerfile
+FROM node:18-alpine AS base
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production && npm cache clean --force
+
+FROM node:18-alpine AS dev-deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+
+FROM dev-deps AS build
+COPY . .
+RUN npm run build
+
+FROM nginx:alpine AS production
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost/ || exit 1
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+```dockerfile
+# Backend Dockerfile
+FROM node:18-alpine AS base
+WORKDIR /app
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+FROM base AS deps
+COPY package*.json ./
+RUN npm ci --only=production && npm cache clean --force
+
+FROM base AS dev-deps
+COPY package*.json ./
+RUN npm ci
+
+FROM dev-deps AS build
+COPY . .
+RUN npm run build && \
+    npx prisma generate
+
+FROM base AS production
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/prisma ./prisma
+COPY package*.json ./
+
+USER nodejs
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3000/health || exit 1
+
+EXPOSE 3000
+CMD ["npm", "start"]
+```
+
+### 🐳 **Docker Compose para Desenvolvimento**
+```yaml
+# ✅ CORRETO: docker-compose.yml
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:3000
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:password@db:5432/vitasana_dev
+      - JWT_SECRET=dev-secret-key
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=vitasana_dev
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:
+```
+
+## ⚙️ ENVIRONMENT CONFIGURATION
+
+### 🔐 **Environment Variables**
+```typescript
+// ✅ CORRETO: Configuração por ambiente
+import { z } from 'zod';
+
+const EnvSchema = z.object({
+  NODE_ENV: z.enum(['development', 'staging', 'production']),
+  PORT: z.string().transform(Number).default('3000'),
+  
+  // Database
+  DATABASE_URL: z.string().url(),
+  
+  // Authentication
+  JWT_SECRET: z.string().min(32),
+  JWT_EXPIRES_IN: z.string().default('15m'),
+  REFRESH_TOKEN_EXPIRES_IN: z.string().default('7d'),
+  
+  // External Services
+  REDIS_URL: z.string().url(),
+  EMAIL_SERVICE_API_KEY: z.string().optional(),
+  SMS_SERVICE_API_KEY: z.string().optional(),
+  
+  // Security
+  CORS_ORIGIN: z.string().default('http://localhost:8080'),
+  RATE_LIMIT_WINDOW_MS: z.string().transform(Number).default('900000'), // 15min
+  RATE_LIMIT_MAX_REQUESTS: z.string().transform(Number).default('100'),
+  
+  // Monitoring
+  LOG_LEVEL: z.enum(['error', 'warn', 'info', 'debug']).default('info'),
+  SENTRY_DSN: z.string().optional(),
+  
+  // Feature Flags
+  ENABLE_REGISTRATION: z.string().transform(Boolean).default('true'),
+  MAINTENANCE_MODE: z.string().transform(Boolean).default('false')
+});
+
+export type Environment = z.infer<typeof EnvSchema>;
+
+export const env: Environment = EnvSchema.parse(process.env);
+
+// Validação no startup
+console.log('✅ Environment validation passed');
+console.log('🚀 Starting server in', env.NODE_ENV, 'mode');
+```
+
+### 📁 **Environment Files Structure**
+```bash
+# Estrutura de arquivos de ambiente
+.env.example          # Template com todas as variáveis
+.env.local           # Desenvolvimento local (git ignored)
+.env.development     # Desenvolvimento compartilhado
+.env.staging         # Ambiente de staging
+.env.production      # Produção (apenas referência, usar secrets)
+```
+
+```bash
+# .env.example
+NODE_ENV=development
+PORT=3000
+
+# Database
+DATABASE_URL=postgresql://user:password@localhost:5432/vitasana
+
+# Authentication (gerar com: openssl rand -base64 32)
+JWT_SECRET=your-super-secret-jwt-key-here
+JWT_EXPIRES_IN=15m
+REFRESH_TOKEN_EXPIRES_IN=7d
+
+# External Services
+REDIS_URL=redis://localhost:6379
+EMAIL_SERVICE_API_KEY=your-email-api-key
+SMS_SERVICE_API_KEY=your-sms-api-key
+
+# Security
+CORS_ORIGIN=http://localhost:8080
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=100
+
+# Monitoring
+LOG_LEVEL=info
+SENTRY_DSN=https://your-sentry-dsn
+
+# Feature Flags
+ENABLE_REGISTRATION=true
+MAINTENANCE_MODE=false
+```
+
+## 🔍 HEALTH CHECKS E MONITORING
+
+### 💓 **Health Check Endpoints**
+```typescript
+// ✅ CORRETO: Health checks abrangentes
+interface HealthCheckResult {
+  status: 'healthy' | 'unhealthy' | 'degraded';
+  timestamp: string;
+  uptime: number;
+  version: string;
+  services: {
+    database: ServiceHealth;
+    redis: ServiceHealth;
+    external: ServiceHealth;
+  };
+}
+
+interface ServiceHealth {
+  status: 'up' | 'down' | 'degraded';
+  responseTime?: number;
+  error?: string;
+}
+
+export const healthController = {
+  // Health check básico (para load balancer)
+  basic: async (req: Request, res: Response) => {
+    res.status(200).json({
+      status: 'healthy',
+      timestamp: new Date().toISOString()
+    });
+  },
+  
+  // Health check detalhado
+  detailed: async (req: Request, res: Response) => {
+    const startTime = Date.now();
+    
+    try {
+      const [dbHealth, redisHealth, externalHealth] = await Promise.allSettled([
+        checkDatabaseHealth(),
+        checkRedisHealth(),
+        checkExternalServicesHealth()
+      ]);
+      
+      const result: HealthCheckResult = {
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        version: process.env.npm_package_version || '1.0.0',
+        services: {
+          database: dbHealth.status === 'fulfilled' ? dbHealth.value : { status: 'down', error: dbHealth.reason?.message },
+          redis: redisHealth.status === 'fulfilled' ? redisHealth.value : { status: 'down', error: redisHealth.reason?.message },
+          external: externalHealth.status === 'fulfilled' ? externalHealth.value : { status: 'down', error: externalHealth.reason?.message }
+        }
+      };
+      
+      // Determinar status geral
+      const services = Object.values(result.services);
+      const hasDown = services.some(s => s.status === 'down');
+      const hasDegraded = services.some(s => s.status === 'degraded');
+      
+      if (hasDown) {
+        result.status = 'unhealthy';
+        return res.status(503).json(result);
+      } else if (hasDegraded) {
+        result.status = 'degraded';
+        return res.status(200).json(result);
+      }
+      
+      res.status(200).json(result);
+    } catch (error) {
+      console.error('❌ Health check failed:', error);
+      
+      res.status(503).json({
+        status: 'unhealthy',
+        timestamp: new Date().toISOString(),
+        error: 'Health check failed'
+      });
+    }
+  }
+};
+
+const checkDatabaseHealth = async (): Promise<ServiceHealth> => {
+  const start = Date.now();
+  
+  try {
+    await db.$queryRaw`SELECT 1`;
+    
+    return {
+      status: 'up',
+      responseTime: Date.now() - start
+    };
+  } catch (error) {
+    return {
+      status: 'down',
+      error: error.message
+    };
+  }
+};
+
+const checkRedisHealth = async (): Promise<ServiceHealth> => {
+  const start = Date.now();
+  
+  try {
+    await redisClient.ping();
+    
+    return {
+      status: 'up',
+      responseTime: Date.now() - start
+    };
+  } catch (error) {
+    return {
+      status: 'down',
+      error: error.message
+    };
+  }
+};
+```
+
+### 📊 **Application Metrics**
+```typescript
+// ✅ CORRETO: Métricas de aplicação
+import prometheus from 'prom-client';
+
+// Métricas básicas
+const httpRequestDuration = new prometheus.Histogram({
+  name: 'http_request_duration_seconds',
+  help: 'Duration of HTTP requests in seconds',
+  labelNames: ['method', 'route', 'status_code'],
+  buckets: [0.1, 0.3, 0.5, 0.7, 1, 3, 5, 7, 10]
+});
+
+const httpRequestTotal = new prometheus.Counter({
+  name: 'http_requests_total',
+  help: 'Total number of HTTP requests',
+  labelNames: ['method', 'route', 'status_code']
+});
+
+const activeConnections = new prometheus.Gauge({
+  name: 'active_connections',
+  help: 'Number of active connections'
+});
+
+// Métricas de negócio
+const reservationsTotal = new prometheus.Counter({
+  name: 'reservations_total',
+  help: 'Total number of reservations created',
+  labelNames: ['status']
+});
+
+const reservationDuration = new prometheus.Histogram({
+  name: 'reservation_duration_seconds',
+  help: 'Time taken to process reservation',
+  buckets: [0.1, 0.5, 1, 2, 5]
+});
+
+// Middleware de métricas
+export const metricsMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const start = Date.now();
+  
+  res.on('finish', () => {
+    const duration = (Date.now() - start) / 1000;
+    const route = req.route?.path || req.path;
+    
+    httpRequestDuration
+      .labels(req.method, route, res.statusCode.toString())
+      .observe(duration);
+      
+    httpRequestTotal
+      .labels(req.method, route, res.statusCode.toString())
+      .inc();
+  });
+  
+  next();
+};
+
+// Endpoint de métricas
+export const metricsController = async (req: Request, res: Response) => {
+  res.set('Content-Type', prometheus.register.contentType);
+  res.end(await prometheus.register.metrics());
+};
+```
+
+## 🔄 CI/CD PIPELINE
+
+### 🚀 **GitHub Actions Workflow**
+```yaml
+# ✅ CORRETO: .github/workflows/deploy.yml
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: |
+          cd frontend && npm ci
+          cd ../backend && npm ci
+      
+      - name: Run linting
+        run: |
+          cd frontend && npm run lint
+          cd ../backend && npm run lint
+      
+      - name: Run type checking
+        run: |
+          cd frontend && npm run type-check
+          cd ../backend && npm run type-check
+      
+      - name: Run tests
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+          REDIS_URL: redis://localhost:6379
+          JWT_SECRET: test-secret-key
+        run: |
+          cd backend && npm run test:unit
+          cd ../frontend && npm run test:unit
+          cd ../backend && npm run test:integration
+      
+      - name: Run E2E tests
+        run: |
+          cd frontend && npm run build
+          cd ../backend && npm run build
+          npm run test:e2e
+      
+      - name: Security audit
+        run: |
+          cd frontend && npm audit --audit-level high
+          cd ../backend && npm audit --audit-level high
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Login to Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Build and push frontend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./frontend
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/frontend:latest
+            ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      
+      - name: Build and push backend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/backend:latest
+            ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Deploy to production
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          script: |
+            cd /opt/vitasana
+            
+            # Backup atual
+            docker-compose down
+            cp docker-compose.yml docker-compose.yml.backup
+            
+            # Pull nova versão
+            git pull origin main
+            
+            # Update images
+            docker-compose pull
+            
+            # Health check antes do deploy
+            if ! curl -f http://localhost/health; then
+              echo "Health check failed, aborting deployment"
+              exit 1
+            fi
+            
+            # Deploy com zero downtime
+            docker-compose up -d --no-deps --scale backend=2 backend
+            sleep 30
+            
+            # Verificar se nova versão está saudável
+            if curl -f http://localhost/health; then
+              # Remover instâncias antigas
+              docker-compose up -d --no-deps --scale backend=1 backend
+              echo "Deployment successful"
+            else
+              # Rollback
+              echo "Health check failed, rolling back"
+              cp docker-compose.yml.backup docker-compose.yml
+              docker-compose up -d
+              exit 1
+            fi
+```
+
+## 📋 DEPLOYMENT CHECKLIST
+
+### ✅ **Pre-deployment**
+- [ ] **Tests**: Todos os testes passando (unit, integration, e2e)
+- [ ] **Security**: Audit de dependências executado
+- [ ] **Performance**: Load testing executado
+- [ ] **Database**: Migrations testadas em staging
+- [ ] **Monitoring**: Dashboards e alertas configurados
+- [ ] **Rollback Plan**: Estratégia de rollback definida
+
+### ✅ **Deployment**
+- [ ] **Zero Downtime**: Deploy sem interrupção do serviço
+- [ ] **Health Checks**: Verificação automática de saúde
+- [ ] **Database Migrations**: Executadas automaticamente
+- [ ] **Cache Warming**: Cache pré-populado se necessário
+- [ ] **Feature Flags**: Novas features desabilitadas inicialmente
+
+### ✅ **Post-deployment**
+- [ ] **Health Verification**: Todos os serviços saudáveis
+- [ ] **Performance Monitoring**: Métricas dentro do esperado
+- [ ] **Error Monitoring**: Sem erros críticos
+- [ ] **User Testing**: Smoke tests em produção
+- [ ] **Documentation**: Changelog atualizado
+
+## 🚫 DEPLOYMENT ANTI-PATTERNS
+
+### ❌ **Práticas Perigosas**
+```bash
+# ❌ INCORRETO: Deploy manual perigoso
+scp -r dist/ server:/var/www/
+ssh server "pm2 restart app" # Sem verificação
+
+# ❌ INCORRETO: Sem backup
+rm -rf /var/www/old
+cp -r /var/www/current /var/www/old # Backup inadequado
+
+# ❌ INCORRETO: Deploy direto em produção
+git push production main # Sem testes
+
+# ❌ INCORRETO: Secrets no código
+const API_KEY = 'sk-1234567890abcdef' # Hardcoded secret
+```
+
+### ✅ **Práticas Seguras**
+```bash
+# ✅ CORRETO: Deploy automatizado
+# Via CI/CD pipeline com:
+# - Testes automatizados
+# - Health checks
+# - Rollback automático
+# - Monitoramento contínuo
+
+# ✅ CORRETO: Backup automático
+docker-compose down
+docker tag current-image backup-image
+docker-compose up -d
+
+# ✅ CORRETO: Secrets management
+# Via environment variables ou secrets manager
+JWT_SECRET=${JWT_SECRET}
+```
+
+## 🔒 PRODUCTION SECURITY
+
+### 🛡️ **Security Headers**
+```nginx
+# ✅ CORRETO: nginx.conf para produção
+server {
+    listen 80;
+    server_name vitasana.com;
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name vitasana.com;
+    
+    # SSL Configuration
+    ssl_certificate /etc/ssl/certs/vitasana.crt;
+    ssl_certificate_key /etc/ssl/private/vitasana.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512;
+    ssl_prefer_server_ciphers off;
+    
+    # Security Headers
+    add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
+    add_header X-Frame-Options DENY;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+    add_header Referrer-Policy "strict-origin-when-cross-origin";
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'";
+    
+    # Gzip Compression
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types text/plain text/css text/xml text/javascript application/javascript application/xml+rss application/json;
+    
+    # Frontend
+    location / {
+        root /usr/share/nginx/html;
+        try_files $uri $uri/ /index.html;
+        
+        # Cache static assets
+        location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
+            expires 1y;
+            add_header Cache-Control "public, immutable";
+        }
+    }
+    
+    # API Proxy
+    location /api/ {
+        proxy_pass http://backend:3000/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+        
+        # Timeouts
+        proxy_connect_timeout 30s;
+        proxy_send_timeout 30s;
+        proxy_read_timeout 30s;
+    }
+}
+```
+
+### 🔍 **Production Monitoring**
+```typescript
+// ✅ CORRETO: Monitoring em produção
+import * as Sentry from '@sentry/node';
+
+// Error tracking
+Sentry.init({
+  dsn: env.SENTRY_DSN,
+  environment: env.NODE_ENV,
+  tracesSampleRate: env.NODE_ENV === 'production' ? 0.1 : 1.0,
+  beforeSend(event) {
+    // Filtrar informações sensíveis
+    if (event.request?.data) {
+      delete event.request.data.password;
+      delete event.request.data.token;
+    }
+    return event;
+  }
+});
+
+// Performance monitoring
+const performanceMonitor = {
+  trackApiCall: (endpoint: string, duration: number, success: boolean) => {
+    // Enviar métricas para serviço de monitoramento
+    console.log('📊 API Performance:', {
+      endpoint,
+      duration,
+      success,
+      timestamp: new Date().toISOString()
+    });
+  },
+  
+  trackBusinessMetric: (metric: string, value: number, tags: Record<string, string> = {}) => {
+    console.log('📈 Business Metric:', {
+      metric,
+      value,
+      tags,
+      timestamp: new Date().toISOString()
+    });
+  }
+};
+
+// Alerting
+const alertManager = {
+  criticalError: (error: Error, context: any) => {
+    console.error('🚨 Critical Error:', {
+      error: error.message,
+      stack: error.stack,
+      context,
+      timestamp: new Date().toISOString()
+    });
+    
+    // Enviar alerta imediato
+    // webhook para Slack/Teams/PagerDuty
+  },
+  
+  performanceAlert: (metric: string, value: number, threshold: number) => {
+    if (value > threshold) {
+      console.warn('⚠️ Performance Alert:', {
+        metric,
+        value,
+        threshold,
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+};
+``` 

@@ -1,0 +1,1299 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 🚀 METODOLOGIA AVANÇADA - Resolução de Problemas e Implementação de Soluções
+
+**Framework Completo para Máxima Eficiência e Qualidade - Versão 2.0**
+
+---
+
+## 📋 METODOLOGIA CORE - THINK → REFLECT → PLAN → EXECUTE → VERIFY → LEARN
+
+### ⚡ **PRINCÍPIO FUNDAMENTAL:**
+**Esta metodologia combina pensamento científico, design thinking e práticas ágeis para garantir soluções assertivas com máxima eficiência e zero retrabalho.**
+
+### 🎯 **APLICABILIDADE UNIVERSAL:**
+- ✅ **Desenvolvimento de Software** (bugs, features, arquitetura)
+- ✅ **Resolução de Problemas Técnicos** (infraestrutura, performance)
+- ✅ **Tomada de Decisões Complexas** (arquitetura, tecnologia)
+- ✅ **Gestão de Projetos** (planejamento, execução, controle)
+- ✅ **Otimização de Processos** (CI/CD, workflows, automação)
+
+---
+
+## 🧠 PASSO 1: THINK (ANÁLISE PROFUNDA)
+
+### 🎯 **Framework de Análise Sistemática:**
+
+#### 📊 **1.1 Classificação Inicial (OBRIGATÓRIO)**
+```
+┌─────────────────┬─────────────────┬─────────────────┐
+│ TIPO            │ URGÊNCIA        │ COMPLEXIDADE    │
+├─────────────────┼─────────────────┼─────────────────┤
+│ 🐛 Bug          │ 🔥 Crítica      │ 🎯 Simples      │
+│ ⚡ Feature      │ ⚠️ Alta         │ 🔧 Média        │
+│ 🔧 Melhoria     │ 📋 Normal       │ 🏗️ Complexa     │
+│ 🏗️ Arquitetura │ 📅 Baixa        │ 🌐 Sistêmica    │
+└─────────────────┴─────────────────┴─────────────────┘
+```
+
+#### 🔍 **1.2 Perguntas Essenciais Expandidas:**
+**PROBLEMA:**
+- **O QUE** exatamente está acontecendo?
+- **ONDE** o problema se manifesta? (camadas, componentes, ambientes)
+- **QUANDO** começou? Há padrões temporais?
+- **QUEM** é impactado? (usuários, sistemas, processos)
+- **COMO** se reproduz? Passos exatos?
+- **POR QUE** é importante resolver agora?
+
+**CONTEXTO:**
+- **STAKEHOLDERS**: Quem precisa ser envolvido?
+- **DEPENDÊNCIAS**: O que pode ser afetado?
+- **RESTRIÇÕES**: Limitações técnicas, tempo, recursos?
+- **HISTÓRICO**: Problemas similares anteriores?
+
+#### 📊 **1.3 Mapeamento de Arquitetura Inteligente:**
+```
+🌐 STACK COMPLETO:
+├── 📱 Frontend (React, TypeScript, Services)
+├── 🔗 API Gateway (Routes, Middleware, Auth)
+├── 🏗️ Backend (Controllers, Services, Business Logic)
+├── 💾 Database (Schema, Queries, Migrations)
+├── ☁️ Infrastructure (Containers, Cloud, CI/CD)
+└── 👥 Integrations (APIs externas, Webhooks)
+```
+
+#### 🤝 **1.4 Análise de Stakeholders (NOVO)**
+- **👑 Primary**: Quem toma as decisões finais?
+- **👥 Secondary**: Quem é afetado pela solução?
+- **🔧 Technical**: Quem tem expertise técnica relevante?
+- **📊 Business**: Quem entende o impacto no negócio?
+
+### 📋 **1.5 Coleta de Informações Sistemática:**
+```bash
+# Informações Técnicas
+- [ ] Logs detalhados (frontend, backend, infraestrutura)
+- [ ] Metrics e monitoring (performance, errors, usage)
+- [ ] Code review do contexto afetado
+- [ ] Testes existentes relacionados
+- [ ] Documentação técnica relevante
+
+# Informações de Negócio
+- [ ] User stories ou requirements
+- [ ] Acceptance criteria
+- [ ] Business rules relacionadas
+- [ ] SLAs e critérios de performance
+- [ ] Compliance e security requirements
+```
+
+---
+
+## 🤔 PASSO 2: REFLECT (ANÁLISE CRÍTICA AVANÇADA)
+
+### 💭 **2.1 Framework de Hipóteses Estruturado:**
+
+#### 📊 **Matriz de Avaliação 4D:**
+Para cada hipótese, avalie:
+- **📊 Probabilidade**: 1-10 (baseado em evidências)
+- **🧪 Testabilidade**: 1-10 (facilidade de verificar)
+- **💥 Impacto**: 1-10 (consequências se for a causa)
+- **⏱️ Effort**: 1-10 (tempo/recursos para investigar/corrigir)
+
+#### 🎯 **Score de Priorização:**
+```
+Score = (Probabilidade × 3) + (Impacto × 2) + (10 - Effort) + (Testabilidade)
+```
+
+#### 🥇 **Matriz de Priorização Avançada:**
+```
+┌─────────────────┬──────────────────┬──────────────────┐
+│ SCORE > 30      │ SCORE 20-30      │ SCORE < 20       │
+├─────────────────┼──────────────────┼──────────────────┤
+│ 🥇 PRIMEIRA     │ 🥈 SEGUNDA       │ 🥉 TERCEIRA      │
+│ (Fácil + Alta)  │ (Balanceada)     │ (Difícil/Baixa)  │
+└─────────────────┴──────────────────┴──────────────────┘
+```
+
+### ⚠️ **2.2 Armadilhas Expandidas por Categoria:**
+
+#### 🔍 **Armadilhas Técnicas:**
+- **Double Data Access**: Serviços já fazem parsing
+- **Type Mismatches**: TypeScript vs runtime
+- **State Sync Issues**: Estado não atualizado
+- **Cache Invalidation**: Dados obsoletos
+- **Race Conditions**: Concorrência não tratada
+- **Memory Leaks**: Recursos não liberados
+- **Error Boundaries**: Erros não capturados
+
+#### 🏗️ **Armadilhas Arquiteturais:**
+- **Tight Coupling**: Dependências desnecessárias
+- **Single Point of Failure**: Componente crítico único
+- **Over-Engineering**: Solução mais complexa que o problema
+- **Technical Debt**: Soluções temporárias permanentes
+- **Performance Bottlenecks**: Gargalos não identificados
+
+#### 👥 **Armadilhas Humanas/Processo:**
+- **Assumption Bias**: Premissas não validadas
+- **Confirmation Bias**: Buscar só evidências que confirmam
+- **Scope Creep**: Expansão não controlada do problema
+- **Communication Gap**: Informações não compartilhadas
+- **Solution Bias**: Pular direto para implementação
+
+### 🌐 **2.3 Research Sistemático (APRIMORADO):**
+
+#### 🔍 **Estratégia de Pesquisa Multi-Canal:**
+```
+🎯 CANAIS PRIORITÁRIOS:
+1. 📚 Official Documentation (sempre primeiro)
+2. 🐙 GitHub Issues (problemas similares resolvidos)
+3. 💬 Stack Overflow (soluções da comunidade)
+4. 📖 Best Practices Guides (padrões estabelecidos)
+5. 🎥 Technical Talks/Blogs (insights avançados)
+6. 👥 Internal Knowledge Base (experiências da equipe)
+```
+
+#### 🕐 **Time-Boxing Research:**
+- **⚡ Quick Research**: 15 min para problemas simples
+- **🔍 Deep Dive**: 30-45 min para problemas complexos
+- **🎯 Focused Search**: Usar keywords específicas + ano
+- **📋 Document Findings**: Sempre registrar insights úteis
+
+---
+
+## 📊 PASSO 3: PLAN (PLANEJAMENTO ESTRATÉGICO)
+
+### 📝 **3.1 Template TODO.md Avançado (OBRIGATÓRIO):**
+
+```markdown
+# TODO - [Problema/Feature] - [Data]
+
+## 🎯 OBJETIVO & CONTEXTO
+**Problema**: [Descrição específica e mensurável]
+**Meta**: [Resultado esperado após correção]
+**Business Impact**: [Como afeta usuários/negócio]
+**Technical Context**: [Stack, componentes, dependências]
+
+## 👥 STAKEHOLDERS
+- **Owner**: [Responsável pela decisão final]
+- **Technical**: [Devs, arquitetos envolvidos]  
+- **Business**: [PO, usuários, clientes afetados]
+- **Review**: [Quem precisa aprovar a solução]
+
+## 🤔 HIPÓTESES PRIORIZADAS (Score)
+1. 🥇 [Hipótese + evidências + score] 
+2. 🥈 [Segunda hipótese + evidências + score]
+3. 🥉 [Terceira hipótese + evidências + score]
+
+## 🌐 RESEARCH INSIGHTS
+- **Soluções Existentes**: [Links e resumo]
+- **Best Practices**: [Padrões recomendados]
+- **Anti-Patterns**: [O que evitar]
+- **Lessons Learned**: [Experiências anteriores]
+
+## 📋 PLANO DE EXECUÇÃO
+### 🔍 Investigação (Paralela)
+- [ ] [Hipótese 1: ferramentas e abordagem]
+- [ ] [Hipótese 2: ferramentas e abordagem]
+- [ ] [Logging estratégico nos pontos críticos]
+
+### 🛠️ Implementação
+- [ ] [Solução mínima viável]
+- [ ] [Testes automatizados]
+- [ ] [Documentação técnica]
+- [ ] [Code review]
+
+### ✅ Validação
+- [ ] [Testes funcionais]
+- [ ] [Testes de regressão]
+- [ ] [Performance testing]
+- [ ] [User acceptance]
+
+## ⏱️ TIMELINE & RESOURCES
+**Estimativas**:
+- 🔍 Investigação: [X horas]
+- 🛠️ Implementação: [X horas]  
+- ✅ Validação: [X horas]
+- **Total**: [X horas]
+
+**Recursos Necessários**:
+- [Pessoas, ferramentas, ambientes]
+
+## 🎯 CRITÉRIOS DE SUCESSO
+**Funcionais**:
+- [ ] [Comportamento esperado funciona]
+- [ ] [Edge cases cobertos]
+- [ ] [Performance dentro do SLA]
+
+**Não-Funcionais**:
+- [ ] [Sem regressões]
+- [ ] [Código maintível]
+- [ ] [Documentação atualizada]
+
+## 🚨 CRITÉRIOS DE ABORT
+- [Condições que fariam abandonar esta abordagem]
+- [Tempo máximo de investigação]
+- [Complexidade máxima aceitável]
+
+## 📊 SUCCESS METRICS
+- **Time to Resolution**: [Meta em horas]
+- **Code Quality**: [Coverage, maintainability]
+- **User Impact**: [Performance, UX metrics]
+```
+
+### 🗺️ **3.2 Estratégias de Execução por Complexidade:**
+
+#### 🎯 **Problemas Simples (< 2h)**
+```
+⚡ FAST TRACK:
+1. 🔍 Quick research (15 min)
+2. 🧪 Rapid hypothesis testing (30 min)
+3. 🛠️ Minimal viable fix (60 min)
+4. ✅ Validation & deploy (15 min)
+```
+
+#### 🔧 **Problemas Médios (2-8h)**
+```
+🔄 ITERATIVE APPROACH:
+1. 🔍 Research + hypotheses (45 min)
+2. 🧪 Parallel investigation (90 min)
+3. 🛠️ Implementation (3-4h)
+4. ✅ Comprehensive testing (60 min)
+```
+
+#### 🏗️ **Problemas Complexos (> 8h)**
+```
+📊 STRUCTURED APPROACH:
+1. 🎯 Stakeholder alignment (30 min)
+2. 🔍 Deep research + architecture review (2h)
+3. 📋 Detailed planning + estimates (1h)
+4. 🛠️ Phased implementation (4-6h)
+5. ✅ Multi-stage validation (2h)
+6. 📚 Documentation + lessons learned (1h)
+```
+
+---
+
+## ⚡ PASSO 4: EXECUTE (EXECUÇÃO OTIMIZADA)
+
+### 🔧 **4.1 Metodologia de Investigação por Camadas:**
+
+#### 🌐 **Layer 1: Infrastructure & Network**
+```typescript
+// 🔍 Connectivity & Infrastructure
+console.log('🌐 Network Check:', {
+  endpoint: process.env.API_URL,
+  timeout: connectionTimeout,
+  retryCount: retryAttempts,
+  timestamp: new Date().toISOString()
+});
+
+// 📊 Performance Metrics
+console.log('📊 Performance:', {
+  responseTime: Date.now() - startTime,
+  memoryUsage: process.memoryUsage(),
+  cpuUsage: process.cpuUsage()
+});
+```
+
+#### 🔗 **Layer 2: API & Services**
+```typescript
+// 🔐 Authentication & Authorization
+console.log('🔐 Auth Check:', {
+  hasToken: !!token,
+  tokenValid: token?.length > 10,
+  userRoles: user?.roles,
+  permissions: user?.permissions
+});
+
+// 📡 API Communication
+console.log('📡 API Call:', {
+  method: req.method,
+  url: req.url,
+  headers: sanitizeHeaders(req.headers),
+  payload: sanitizePayload(req.body),
+  correlationId: req.correlationId
+});
+
+console.log('📥 API Response:', {
+  status: res.status,
+  statusText: res.statusText,
+  dataType: typeof res.data,
+  dataSize: JSON.stringify(res.data || {}).length,
+  correlationId: res.correlationId
+});
+```
+
+#### ⚛️ **Layer 3: Frontend & UI**
+```typescript
+// 🎯 Component Lifecycle
+console.log('⚛️ Component:', {
+  name: ComponentName,
+  phase: 'mount|update|unmount',
+  props: sanitizeProps(props),
+  state: sanitizeState(state),
+  renderCount: renderCountRef.current++
+});
+
+// 📊 Data Flow
+console.log('📊 Data Flow:', {
+  received: !!data,
+  processed: !!processedData,
+  loading: isLoading,
+  error: error?.message,
+  cacheHit: isCacheHit
+});
+
+// 🔄 State Changes
+console.log('🔄 State Change:', {
+  component: ComponentName,
+  from: prevState,
+  to: newState,
+  trigger: actionType,
+  timestamp: Date.now()
+});
+```
+
+### 🧪 **4.2 Investigação Paralela Avançada:**
+
+#### ⚡ **Parallel Execution Strategy:**
+```bash
+# 🎯 Execute SIMULTANEAMENTE baseado no tipo de problema:
+
+# Para Bugs de UI:
+- codebase_search: "componente relacionado"
+- grep_search: "estilos CSS relacionados"
+- file_search: "hooks e contexts"
+- web_search: "react [erro específico] 2024"
+
+# Para Bugs de API:
+- codebase_search: "endpoint relacionado"  
+- grep_search: "service layer"
+- read_file: "controller + middleware"
+- web_search: "nodejs [erro] best practices"
+
+# Para Bugs de Database:
+- codebase_search: "schema relacionado"
+- grep_search: "queries relacionadas"
+- read_file: "migration files"  
+- web_search: "prisma [erro] solution"
+```
+
+### 🛠️ **4.3 Implementação com Padrões Modernos 2024:**
+
+#### ✅ **Princípios de Implementação Avançados:**
+1. **🎯 Minimal Viable Fix**: Menor alteração que resolve
+2. **🔒 Type Safety First**: TypeScript rigoroso + runtime validation
+3. **⚡ Performance by Default**: Otimização desde o início
+4. **🛡️ Error Boundaries**: Graceful degradation
+5. **♿ Accessibility First**: A11y como requisito, não afterthought
+6. **🧪 Test-Driven**: Testes antes da implementação
+7. **📚 Self-Documenting**: Código que explica a intenção
+8. **🔄 Observability**: Metrics, logs, tracing
+
+#### 🔧 **Padrões Arquiteturais Modernos:**
+
+```typescript
+// ✅ MODERNO: Composable Architecture
+interface UseFeatureOptions {
+  enabled?: boolean;
+  onSuccess?: (data: FeatureData) => void;
+  onError?: (error: Error) => void;
+  retryConfig?: RetryConfig;
+}
+
+const useFeature = (options: UseFeatureOptions = {}) => {
+  const { enabled = true, onSuccess, onError, retryConfig } = options;
+  
+  return useQuery({
+    queryKey: ['feature', options],
+    queryFn: () => featureService.getData(),
+    enabled,
+    retry: retryConfig?.attempts ?? 3,
+    retryDelay: retryConfig?.delay ?? 1000,
+    staleTime: 5 * 60 * 1000, // 5min
+    onSuccess,
+    onError,
+    // 🔍 Built-in observability
+    meta: {
+      traceId: generateTraceId(),
+      component: 'useFeature'
+    }
+  });
+};
+
+// ✅ MODERNO: Error Boundary com Context
+const ErrorBoundaryProvider = ({ children }: PropsWithChildren) => (
+  <ErrorBoundary
+    FallbackComponent={ErrorFallback}
+    onError={(error, errorInfo) => {
+      // 📊 Structured logging
+      logger.error('Component Error', {
+        error: error.message,
+        stack: error.stack,
+        componentStack: errorInfo.componentStack,
+        userId: getCurrentUser()?.id,
+        timestamp: new Date().toISOString(),
+        buildVersion: process.env.REACT_APP_VERSION
+      });
+      
+      // 📈 Error tracking
+      analytics.track('component_error', {
+        error_type: error.name,
+        component_path: errorInfo.componentStack
+      });
+    }}
+  >
+    <Suspense fallback={<SkeletonLoader />}>
+      {children}
+    </Suspense>
+  </ErrorBoundary>
+);
+
+// ✅ MODERNO: Defensive Data Processing
+const processApiResponse = <T>(
+  response: ApiResponse<T>,
+  options: ProcessingOptions = {}
+): ProcessedData<T> => {
+  const traceId = generateTraceId();
+  
+  logger.debug('Processing API Response', {
+    traceId,
+    status: response?.status,
+    hasData: !!response?.data,
+    dataType: response?.data ? typeof response.data : 'undefined'
+  });
+
+  try {
+    // 🛡️ Multiple fallback strategies
+    const rawData = response?.data ?? response?.items ?? response?.result ?? [];
+    
+    // 🔍 Type validation at runtime
+    const validatedData = options.schema 
+      ? options.schema.parse(rawData)
+      : rawData;
+    
+    // 📊 Normalization
+    const normalizedData = Array.isArray(validatedData) 
+      ? validatedData 
+      : [validatedData].filter(Boolean);
+    
+    logger.debug('Data Processing Success', {
+      traceId,
+      inputType: typeof rawData,
+      outputCount: normalizedData.length,
+      processingTime: Date.now() - startTime
+    });
+    
+    return {
+      data: normalizedData,
+      meta: {
+        traceId,
+        processedAt: new Date().toISOString(),
+        count: normalizedData.length
+      }
+    };
+    
+  } catch (error) {
+    logger.error('Data Processing Failed', {
+      traceId,
+      error: error.message,
+      response: sanitizeForLogging(response)
+    });
+    
+    // 🛡️ Graceful fallback
+    return {
+      data: [],
+      meta: {
+        traceId,
+        error: error.message,
+        processedAt: new Date().toISOString()
+      }
+    };
+  }
+};
+
+#### 🚀 **Performance e UX Modernas:**
+```typescript
+// ✅ MODERNO: Optimistic Updates
+const useOptimisticMutation = <TData, TError, TVariables>(
+  mutationFn: (variables: TVariables) => Promise<TData>,
+  options: OptimisticOptions<TData, TVariables> = {}
+) => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn,
+    onMutate: async (variables) => {
+      // 🚫 Cancel outgoing queries
+      await queryClient.cancelQueries(options.queryKey);
+      
+      // 📸 Snapshot current state
+      const previousData = queryClient.getQueryData(options.queryKey);
+      
+      // 🎯 Optimistic update
+      if (options.optimisticUpdate) {
+        queryClient.setQueryData(
+          options.queryKey,
+          options.optimisticUpdate(previousData, variables)
+        );
+      }
+      
+      return { previousData };
+    },
+    onError: (error, variables, context) => {
+      // 🔄 Rollback on error
+      if (context?.previousData) {
+        queryClient.setQueryData(options.queryKey, context.previousData);
+      }
+      
+      toast.error('Operação falhou, tente novamente');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(options.queryKey);
+    },
+  });
+};
+
+// ✅ MODERNO: Smart Caching Strategy
+const useSmartCache = <T>(
+  key: QueryKey,
+  queryFn: QueryFunction<T>,
+  options: SmartCacheOptions = {}
+) => {
+  const {
+    staleTime = 5 * 60 * 1000, // 5min default
+    cacheTime = 10 * 60 * 1000, // 10min default
+    background = true,
+    realtime = false
+  } = options;
+  
+  return useQuery({
+    queryKey: key,
+    queryFn,
+    staleTime,
+    cacheTime,
+    refetchOnWindowFocus: background,
+    refetchOnReconnect: true,
+    retry: (failureCount, error) => {
+      if (error.status === 404) return false;
+      if (error.status >= 500) return failureCount < 3;
+      return failureCount < 1;
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+  });
+};
+```
+
+---
+
+## ✅ PASSO 5: VERIFY (VALIDAÇÃO ABRANGENTE)
+
+### 🧪 **5.1 Framework de Validação Multi-Camadas:**
+
+#### 📋 **Checklist de Verificação Expandido:**
+```
+🎯 FUNCIONALIDADE:
+- [ ] **Core Feature**: Funcionalidade principal 100% operacional
+- [ ] **Edge Cases**: Cenários extremos cobertos
+- [ ] **Error Handling**: Erros tratados graciosamente
+- [ ] **Input Validation**: Dados inválidos rejeitados adequadamente
+- [ ] **Business Rules**: Regras de negócio respeitadas
+
+🚀 PERFORMANCE:
+- [ ] **Loading Time**: < 3s para operações principais
+- [ ] **API Response**: < 500ms para endpoints críticos
+- [ ] **Bundle Size**: Impacto mínimo no tamanho final
+- [ ] **Memory Usage**: Sem vazamentos de memória
+- [ ] **CPU Usage**: Operações eficientes
+
+🎨 UX/UI:
+- [ ] **Responsive Design**: Funciona em todos os breakpoints
+- [ ] **Touch Interactions**: Suporte adequado para mobile
+- [ ] **Loading States**: Feedbacks visuais durante carregamento
+- [ ] **Error States**: Mensagens claras e acionáveis
+- [ ] **Success States**: Confirmações de ações bem-sucedidas
+
+♿ ACCESSIBILITY:
+- [ ] **Keyboard Navigation**: Navegação completa via teclado
+- [ ] **Screen Reader**: ARIA labels e roles adequados
+- [ ] **Color Contrast**: Conformidade com WCAG 2.1 AA
+- [ ] **Focus Management**: Indicadores visuais claros
+- [ ] **Alternative Text**: Imagens com descrições adequadas
+
+🔒 SECURITY:
+- [ ] **Input Sanitization**: Prevenção de XSS/SQL injection
+- [ ] **Authentication**: Controle de acesso adequado
+- [ ] **Authorization**: Permissões respeitadas
+- [ ] **Data Exposure**: Informações sensíveis protegidas
+- [ ] **Rate Limiting**: Proteção contra abuso
+```
+
+### 📊 **5.2 Testing Pyramid Moderno:**
+```
+                    🔺
+                   /E2E\
+                  /Tests\    (5-10%)
+                 /_______\
+                /         \
+               /Integration\  (20-30%)
+              /    Tests    \
+             /_____________\
+            /               \
+           /   Unit Tests    \  (60-70%)
+          /_________________\
+```
+
+#### 🧪 **Testes Obrigatórios por Tipo:**
+
+**🔬 Unit Tests (60-70%):**
+```typescript
+describe('processApiResponse', () => {
+  it('should handle empty response gracefully', () => {
+    const result = processApiResponse(null);
+    expect(result.data).toEqual([]);
+    expect(result.meta.error).toBeDefined();
+  });
+  
+  it('should normalize array data correctly', () => {
+    const response = { data: [{ id: 1 }, { id: 2 }] };
+    const result = processApiResponse(response);
+    expect(result.data).toHaveLength(2);
+    expect(result.meta.count).toBe(2);
+  });
+});
+```
+
+**🔗 Integration Tests (20-30%):**
+```typescript
+describe('ReservationService Integration', () => {
+  it('should create reservation with credit deduction', async () => {
+    mockApiClient.post('/reservations').reply(201, mockReservation);
+    mockApiClient.patch('/credits/deduct').reply(200, { newBalance: 50 });
+    
+    const result = await reservationService.create(mockReservationData);
+    
+    expect(result.reservation).toMatchObject(mockReservation);
+    expect(mockApiClient.history.post).toHaveLength(1);
+    expect(mockApiClient.history.patch).toHaveLength(1);
+  });
+});
+```
+
+**🎭 E2E Tests (5-10%):**
+```typescript
+describe('Reservation Flow E2E', () => {
+  it('should complete full reservation process', async () => {
+    await page.goto('/client/calendar');
+    await page.fill('[data-testid="email"]', 'user@test.com');
+    await page.click('[data-testid="login-button"]');
+    await page.click('[data-date="2024-12-25"]');
+    await page.click('[data-time="10:00"]');
+    await page.click('[data-testid="confirm-reservation"]');
+    
+    await expect(page.locator('[data-testid="success-message"]')).toBeVisible();
+  });
+});
+```
+
+### 🔄 **5.3 Real-time Monitoring & Alerting:**
+
+#### 📊 **Performance Monitoring:**
+```typescript
+// ✅ MODERNO: Performance Tracking
+const usePerformanceMonitor = () => {
+  useEffect(() => {
+    const observer = new PerformanceObserver((list) => {
+      list.getEntries().forEach((entry) => {
+        if (entry.entryType === 'measure') {
+          analytics.track('performance_metric', {
+            name: entry.name,
+            duration: entry.duration,
+            startTime: entry.startTime,
+            component: getCurrentComponent()
+          });
+        }
+      });
+    });
+    
+    observer.observe({ entryTypes: ['measure'] });
+    
+    return () => observer.disconnect();
+  }, []);
+};
+
+// ✅ MODERNO: Error Tracking
+const useErrorTracking = () => {
+  useEffect(() => {
+    const handleError = (event: ErrorEvent) => {
+      logger.error('Unhandled Error', {
+        message: event.message,
+        filename: event.filename,
+        lineno: event.lineno,
+        colno: event.colno,
+        error: event.error?.stack,
+        userAgent: navigator.userAgent,
+        timestamp: new Date().toISOString()
+      });
+    };
+    
+    window.addEventListener('error', handleError);
+    return () => window.removeEventListener('error', handleError);
+  }, []);
+};
+```
+
+### 🔄 **5.4 Se NÃO Funcionou - Protocolo de Iteração:**
+
+#### 📊 **Decision Matrix para Próximos Passos:**
+```
+🔍 ANÁLISE DE FALHA:
+├── 🎯 Hipótese Errada?
+│   └── Voltar para PASSO 2 (REFLECT) com novos dados
+├── 🛠️ Implementação Defeituosa?
+│   └── Revisar PASSO 4 (EXECUTE) com feedback
+├── 📋 Plano Inadequado?
+│   └── Ajustar PASSO 3 (PLAN) baseado em learnings
+└── 🧠 Problema Mal Definido?
+    └── Retornar para PASSO 1 (THINK) para redefinir
+```
+
+#### 🚨 **Protocolo de Segurança para Iteração:**
+```typescript
+interface IterationProtocol {
+  maxIterations: number;        // Máximo 3 iterações
+  timeboxing: number;          // Máximo 8h por iteração
+  escalationTriggers: {
+    timeExceeded: boolean;     // > 24h total
+    complexityHigh: boolean;   // Score > 8/10
+    stakeholderBlock: boolean; // Decisão externa necessária
+  };
+  
+  exitStrategy: {
+    documentLearnings: boolean;
+    escalateToSenior: boolean;
+    scheduleFollowUp: boolean;
+  };
+}
+```
+
+---
+
+## 📚 PASSO 6: LEARN (APRENDIZADO SISTEMATIZADO)
+
+### 🧠 **6.1 Knowledge Management Framework:**
+
+#### 📝 **Post-Mortem Template (OBRIGATÓRIO):**
+```markdown
+# POST-MORTEM - [Problema/Feature] - [Data Finalização]
+
+## 📊 RESUMO EXECUTIVO
+**Problema**: [O que foi resolvido]
+**Solução**: [Como foi resolvido]
+**Tempo Total**: [Horas gastas]
+**Impacto**: [Usuários/sistemas afetados]
+
+## 🎯 O QUE FUNCIONOU BEM
+- [Decisões certas, ferramentas úteis, processos eficientes]
+- [Abordagens que economizaram tempo]
+- [Colaborações produtivas]
+
+## 🚫 O QUE NÃO FUNCIONOU
+- [Armadilhas que caímos]
+- [Tempo perdido em abordagens erradas]
+- [Gaps de comunicação/processo]
+
+## 💡 INSIGHTS E APRENDIZADOS
+- [Padrões identificados]
+- [Técnicas novas aprendidas]
+- [Correlações descobertas]
+
+## 🔧 MELHORIAS PARA PRÓXIMA VEZ
+**Processo**:
+- [Ajustes na metodologia]
+- [Ferramentas adicionais necessárias]
+
+**Técnico**:
+- [Padrões para adotar]
+- [Anti-patterns para evitar]
+
+**Colaboração**:
+- [Stakeholders para envolver mais cedo]
+- [Comunicação para melhorar]
+
+## 📚 KNOWLEDGE BASE UPDATE
+- [ ] Documentação técnica atualizada
+- [ ] Runbooks/playbooks criados
+- [ ] FAQs atualizados
+- [ ] Best practices documentadas
+
+## 🎯 ACTION ITEMS
+- [ ] [Item específico + responsável + prazo]
+- [ ] [Processo/ferramenta para implementar]
+- [ ] [Conhecimento para compartilhar com equipe]
+```
+
+#### 🏗️ **Classificação de Learnings:**
+```
+📚 TIPOS DE CONHECIMENTO:
+├── 🎯 TACTICAL (Solução específica)
+│   ├── Bug fix patterns
+│   ├── Configuration recipes  
+│   └── Quick debugging tips
+├── 🏗️ STRATEGIC (Arquitetura/Design)
+│   ├── System design patterns
+│   ├── Technology decisions
+│   └── Architecture trade-offs
+└── 🧠 CULTURAL (Processo/Pessoas)
+    ├── Communication improvements
+    ├── Collaboration patterns
+    └── Decision-making processes
+```
+
+### 📈 **6.2 Métricas de Evolução:**
+
+#### 🎯 **KPIs de Aprendizado:**
+```typescript
+interface LearningMetrics {
+  // ⚡ Efficiency Metrics
+  averageResolutionTime: number;        // Trending down?
+  firstTimeSuccessRate: number;         // Trending up?
+  iterationsPerProblem: number;         // Trending down?
+  
+  // 🧠 Knowledge Metrics  
+  reusedSolutionsCount: number;         // Trending up?
+  newPatternsIdentified: number;        // Steady flow?
+  documentationQuality: number;         // Improving?
+  
+  // 👥 Collaboration Metrics
+  stakeholderSatisfaction: number;      // High and stable?
+  knowledgeSharingFrequency: number;    // Regular?
+  crossFunctionalLearning: number;      // Growing?
+}
+```
+
+#### 📊 **Tracking Dashboard:**
+```typescript
+const LearningDashboard = () => {
+  const metrics = useLearningMetrics();
+  
+  return (
+    <div className="learning-dashboard">
+      <MetricCard
+        title="Tempo Médio de Resolução"
+        value={metrics.averageResolutionTime}
+        trend={metrics.resolutionTimeTrend}
+        target={2} // 2 horas
+      />
+      
+      <MetricCard
+        title="Taxa de Sucesso na Primeira Tentativa"
+        value={metrics.firstTimeSuccessRate}
+        trend={metrics.successRateTrend}
+        target={90} // 90%
+      />
+      
+      <MetricCard
+        title="Padrões Reutilizados"
+        value={metrics.reusedSolutionsCount}
+        trend={metrics.reuseTrend}
+        target="crescente"
+      />
+    </div>
+  );
+};
+```
+
+### 🌐 **6.3 Knowledge Sharing & Community Building:**
+
+#### 👥 **Sharing Strategies:**
+```
+🎯 INTERNAL SHARING:
+├── 📋 Weekly Learning Retrospectives
+├── 🎥 Screen recordings de soluções complexas
+├── 🧪 Tech talks sobre descobertas
+├── 📚 Internal blog posts
+└── 🤝 Pair programming sessions
+
+🌍 EXTERNAL SHARING:
+├── 📝 Blog posts técnicos
+├── 🎤 Conference talks
+├── 💬 Community forums
+├── 🐙 Open source contributions
+└── 📖 Documentation contributions
+```
+
+#### 🏆 **Recognition & Incentives:**
+```typescript
+interface RecognitionSystem {
+  // 🎯 Individual Recognition
+  problemSolver: {
+    criteria: "Resolved complex issue efficiently";
+    reward: "Spotlight in team meeting";
+  };
+  
+  knowledgeSharer: {
+    criteria: "Documented solution for team";
+    reward: "Knowledge sharing badge";
+  };
+  
+  // 👥 Team Recognition
+  collaborationExcellence: {
+    criteria: "Cross-functional problem solving";
+    reward: "Team dinner";
+  };
+  
+  // 🌟 Innovation Recognition
+  processImprovement: {
+    criteria: "Improved methodology/tools";
+    reward: "Innovation award";
+  };
+}
+```
+
+---
+
+## 🎯 CASOS DE ESTUDO AVANÇADOS
+
+### 📋 **Caso 1: Problema de Performance Complexo**
+```
+🧠 THINK: 
+- Sistema lento após deploy
+- Usuários reportando timeouts
+- Monitoring mostra CPU spikes
+
+🤔 REFLECT:
+- Hipótese 1: Memory leak (Score: 32) 🥇
+- Hipótese 2: Database N+1 queries (Score: 28) 🥈  
+- Hipótese 3: Bundle size increase (Score: 15) 🥉
+
+📊 PLAN:
+- Parallel investigation com profiling tools
+- A/B testing com versão anterior
+- Stakeholder: Tech Lead + DevOps + Product
+
+⚡ EXECUTE:
+- Memory profiling identificou leak em WebSocket
+- Performance monitoring revelou query patterns
+- Bundle analysis mostrou increase marginal
+
+✅ VERIFY:
+- Performance testing pré/pós correção
+- Load testing em staging
+- Real user monitoring em production
+
+📚 LEARN:
+- WebSocket cleanup pattern documentado
+- Monitoring alerts configurados
+- Code review checklist atualizado
+```
+
+### 📋 **Caso 2: Feature Complexa Multi-Stakeholder**
+```
+🧠 THINK:
+- Sistema de notificações real-time
+- 5 stakeholders diferentes
+- Integração com APIs externas
+
+🤔 REFLECT:
+- Technical complexity: Alta
+- Business impact: Crítico
+- Timeline: Agressiva
+
+📊 PLAN: 
+- Stakeholder workshops para alignment
+- Phased rollout strategy
+- Risk mitigation com feature flags
+
+⚡ EXECUTE:
+- MVP com core functionality
+- Progressive enhancement
+- Continuous stakeholder feedback
+
+✅ VERIFY:
+- User acceptance testing
+- Performance under load
+- Business metrics tracking
+
+📚 LEARN:
+- Stakeholder management framework
+- Real-time architecture patterns
+- Feature flag best practices
+```
+
+### 📋 **Caso 3: Crisis Management - Sistema Down**
+```
+🧠 THINK:
+- Produção completamente offline
+- Usuários não conseguem acessar
+- Revenue impact crítico
+
+🤔 REFLECT:
+- Hipótese 1: Database connection pool (Score: 35) 🥇
+- Hipótese 2: CDN failure (Score: 30) 🥈
+- Hipótese 3: Application crash (Score: 25) 🥉
+
+📊 PLAN:
+- War room com stakeholders críticos
+- Parallel investigation + rollback preparation
+- Communication plan para usuários
+
+⚡ EXECUTE:
+- Database monitoring revelou connection exhaustion
+- Immediate connection pool scaling
+- Parallel root cause analysis
+
+✅ VERIFY:
+- System health monitoring
+- User access validation
+- Performance metrics recovery
+
+📚 LEARN:
+- Incident response playbook criado
+- Monitoring thresholds ajustados
+- Auto-scaling policies implementadas
+```
+
+---
+
+## 🛡️ DIRETRIZES AVANÇADAS E BEST PRACTICES
+
+### ⚡ **Para Máxima Eficiência 2024:**
+
+#### 🎯 **Core Principles (SEMPRE):**
+1. **🧠 Think-First Approach**: Nunca pular a análise inicial
+2. **🔄 Parallel Execution**: Usar ferramentas simultaneamente sempre que possível
+3. **📊 Data-Driven Decisions**: Baseiar decisões em evidências, não intuição
+4. **🤝 Stakeholder Involvement**: Incluir pessoas certas desde o início
+5. **🎯 Outcome Focus**: Manter foco no resultado final, não na solução
+6. **📚 Continuous Learning**: Documentar e compartilhar todos os insights
+7. **🔒 Quality by Design**: Construir qualidade desde o início, não adicionar depois
+
+#### 🌐 **Research Guidelines Avançadas:**
+```
+🔍 SEARCH STRATEGY:
+├── 📚 Official docs (sempre primeiro, últimas versões)
+├── 🐙 GitHub Issues + Discussions (problemas reais, soluções verificadas)  
+├── 💬 Stack Overflow (community expertise, upvoted solutions)
+├── 🎥 Tech talks/blogs (thought leaders, emerging patterns)
+├── 📖 Best practices guides (industry standards, proven approaches)
+└── 👥 Internal knowledge (team experience, lessons learned)
+
+⏰ TIME MANAGEMENT:
+├── ⚡ Quick scan (5-10 min): Overview + key insights
+├── 🔍 Deep dive (20-30 min): Detailed analysis + alternatives  
+├── 🎯 Focused research (45+ min): Complex problems only
+└── 📋 Document findings: Always capture useful information
+```
+
+### 🏗️ **Architectural Decision Framework:**
+
+#### 🎯 **ADR (Architecture Decision Record) Template:**
+```markdown
+# ADR-001: [Decision Title]
+
+## Status
+[Proposed | Accepted | Deprecated | Superseded]
+
+## Context
+[Situation and constraints that led to this decision]
+
+## Decision
+[The change that we're making]
+
+## Consequences
+**Positive:**
+- [Good outcomes expected]
+
+**Negative:**  
+- [Trade-offs and potential issues]
+
+**Neutral:**
+- [Other implications]
+
+## Alternatives Considered
+- [Option 1: Pros/Cons]
+- [Option 2: Pros/Cons]
+
+## Follow-up Actions
+- [ ] [Implementation tasks]
+- [ ] [Monitoring/validation needed]
+```
+
+### 📊 **Success Metrics Framework:**
+
+#### 🎯 **Multi-Dimensional Success Criteria:**
+```typescript
+interface SuccessMetrics {
+  // ⚡ Efficiency Metrics
+  timeToResolution: {
+    target: number;      // Hours
+    current: number;
+    trend: 'up' | 'down' | 'stable';
+  };
+  
+  firstTimeSuccess: {
+    target: number;      // Percentage
+    current: number;
+    trend: 'up' | 'down' | 'stable';
+  };
+  
+  // 🎯 Quality Metrics
+  defectRate: {
+    target: number;      // Bugs per 1000 lines
+    current: number;
+    trend: 'up' | 'down' | 'stable';
+  };
+  
+  // 👥 Collaboration Metrics
+  stakeholderSatisfaction: {
+    target: number;      // 1-10 scale
+    current: number;
+    feedback: string[];
+  };
+  
+  // 🚀 Innovation Metrics
+  newPatternsAdopted: number;
+  processImprovements: number;
+  automationGains: number;
+}
+```
+
+---
+
+## 🌟 **MINDSET E CULTURA DE EXCELÊNCIA**
+
+### 🧠 **Mental Models para Problem Solving:**
+
+#### 🔬 **Scientific Thinking:**
+- **Hypothesis-Driven**: Formar hipóteses testáveis antes de investigar
+- **Evidence-Based**: Tomar decisões baseadas em dados, não opinião  
+- **Falsifiable**: Buscar evidências que possam contradizer suas hipóteses
+- **Iterative**: Refinar entendimento através de experimentação
+
+#### 🎨 **Design Thinking:**
+- **Empathy**: Entender profundamente os usuários e stakeholders
+- **Define**: Clarificar o problema real antes de buscar soluções
+- **Ideate**: Gerar múltiplas alternativas antes de escolher uma
+- **Prototype**: Criar versões mínimas para testar rapidamente
+- **Test**: Validar com usuários reais, não apenas teoria
+
+#### ⚡ **Lean Thinking:**
+- **Value Focus**: Sempre questionar se está agregando valor real
+- **Waste Elimination**: Identificar e remover atividades desnecessárias
+- **Flow Optimization**: Minimizar handoffs e wait times
+- **Pull System**: Fazer apenas o que é necessário, quando necessário
+- **Continuous Improvement**: Pequenas melhorias constantes > grandes mudanças esporádicas
+
+### 🤝 **Collaboration Excellence:**
+
+#### 👥 **Stakeholder Management Avançado:**
+```typescript
+interface StakeholderMap {
+  primary: {
+    decisionMaker: Person;
+    accountable: Person;
+    budget: Person;
+  };
+  
+  secondary: {
+    impacted: Person[];
+    consulted: Person[];
+    informed: Person[];
+  };
+  
+  technical: {
+    architects: Person[];
+    experts: Person[];
+    reviewers: Person[];
+  };
+  
+  communication: {
+    frequency: 'daily' | 'weekly' | 'milestone';
+    method: 'standup' | 'email' | 'slack' | 'meeting';
+    artifacts: string[];
+  };
+}
+```
+
+#### 🎯 **Communication Patterns:**
+```typescript
+const CommunicationStrategy = {
+  // 🎯 Problem Definition Phase
+  discovery: {
+    stakeholders: ['primary', 'technical'],
+    frequency: 'daily',
+    artifacts: ['problem statement', 'impact assessment']
+  },
+  
+  // 🔍 Investigation Phase  
+  investigation: {
+    stakeholders: ['technical'],
+    frequency: 'as-needed',
+    artifacts: ['progress updates', 'findings']
+  },
+  
+  // 🛠️ Implementation Phase
+  implementation: {
+    stakeholders: ['primary', 'technical', 'affected'],
+    frequency: 'milestone',
+    artifacts: ['demos', 'progress reports']
+  },
+  
+  // ✅ Validation Phase
+  validation: {
+    stakeholders: ['all'],
+    frequency: 'milestone',
+    artifacts: ['test results', 'acceptance criteria']
+  }
+};
+```
+
+---
+
+## 🎯 **OBJETIVO FINAL E VISÃO**
+
+### 💎 **Excelência Operacional:**
+**Transformar a resolução de problemas de artesanato individual em ciência sistemática, onde cada desafio se torna uma oportunidade de aprendizado e melhoria contínua.**
+
+### 🚀 **North Star Metrics:**
+- **⚡ Eficiência**: 90%+ de problemas resolvidos na primeira tentativa
+- **🎯 Qualidade**: Zero regressões introduzidas nas soluções
+- **📚 Aprendizado**: 100% dos insights documentados e compartilhados
+- **👥 Colaboração**: Stakeholders sempre aligned e satisfeitos
+- **🔄 Melhoria**: Processo continuamente evoluindo baseado em dados
+
+### 🌟 **Legacy Impact:**
+- **Individual**: Desenvolvedores mais confiantes e eficientes
+- **Team**: Conhecimento coletivo crescendo exponencialmente  
+- **Organization**: Cultura de excelência técnica e aprendizado
+- **Industry**: Padrões elevados através de sharing e contribuições
+
+### 🎖️ **Success Stories Framework:**
+```typescript
+interface SuccessStory {
+  title: string;
+  challenge: string;
+  approach: string;
+  outcome: {
+    timeToResolution: number;
+    qualityImpact: string;
+    learningGains: string[];
+    stakeholderFeedback: string;
+  };
+  
+  reusablePatterns: string[];
+  lessonsLearned: string[];
+  nextSteps: string[];
+}
+```
+
+---
+
+**Esta metodologia representa a evolução natural do pensamento sistemático aplicado ao desenvolvimento de software, combinando rigor científico com pragmatismo operacional para entregar resultados consistentemente superiores.**
+
+*Versão 2.0 - Framework Avançado para Resolução de Problemas e Implementação de Soluções*
+*Desenvolvido para máxima eficiência, qualidade e aprendizado contínuo*
+
+---
