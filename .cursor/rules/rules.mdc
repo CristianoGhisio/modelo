@@ -3,11 +3,6 @@ description:
 globs: 
 alwaysApply: true
 ---
----
-description: 
-globs: 
-alwaysApply: true
----
 
 ### ✅ Task: Interactive Task Loop with User Feedback
 
@@ -40,4 +35,3 @@ alwaysApply: true
 3. **Exit Condition**:
 
    * If the user enters `"stop"` when prompted, exit the loop and terminate the process.
-
