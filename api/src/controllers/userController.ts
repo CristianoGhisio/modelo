@@ -1,25 +1,47 @@
 import { Request, Response, RequestHandler } from 'express';
-import { createUserService } from '../services/userService';
+import { PrismaClient } from '@prisma/client';
 import { Prisma } from '@prisma/client';
 
-export const createUserController: RequestHandler = async (req: Request, res: Response) => {
-  try {
-    const user = await createUserService(req.body);
-    res.status(201).json(user);
-  } catch (error) {
-    // Em um app real, você teria um log mais robusto aqui
-    console.error('Erro ao criar usuário:', error);
+const prisma = new PrismaClient();
 
+// Função para criar um usuário
+export const createUserController: RequestHandler = async (req, res) => {
+  try {
+    // A lógica de hash de senha deve ser adicionada aqui em um cenário real
+    const newUser = await prisma.user.create({
+      data: req.body,
+    });
+    res.status(201).json(newUser);
+  } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // "Unique constraint failed on the {constraint}"
       if (error.code === 'P2002') {
-        // P2002 é o código para violação de restrição única (unique constraint)
-        res.status(409).json({ message: 'Este e-mail já está em uso.' });
-        return; // Encerra a execução aqui
+        res.status(409).json({ message: 'Email já cadastrado.' });
+        return;
       }
     }
-
-    res.status(500).json({ message: 'Erro interno do servidor.' });
+    // Para outros erros, retorna um erro de servidor genérico
+    res.status(500).json({ message: 'Erro interno do servidor' });
   }
 };
 
+// Função para buscar todos os usuários
+export const getAllUsers: RequestHandler = async (req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Ocorreu um erro ao buscar os usuários.' });
+  }
+};
+
+// Adicione outras funções de controller aqui (ex: getUser, updateUser, etc.) 
 // Adicione outras funções de controller aqui (ex: getUser, updateUser, etc.) 

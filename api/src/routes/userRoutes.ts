@@ -1,12 +1,13 @@
 import { Router } from 'express';
-import { createUserController } from '../controllers/userController';
+import { createUserController, getAllUsers } from '../controllers/userController';
+import { authMiddleware } from '../middlewares/authMiddleware';
 
 const router = Router();
 
-// Define a rota para criar um novo usuário
-// POST /api/users/
+// A rota para criar um usuário não deve ser protegida, para permitir o cadastro
 router.post('/', createUserController);
 
-// Adicione outras rotas de usuário aqui (ex: GET /, GET /:id, etc.)
+// A rota para obter todos os usuários agora está protegida pelo middleware
+router.get('/', authMiddleware, getAllUsers);
 
-export default router; 
+export default router;

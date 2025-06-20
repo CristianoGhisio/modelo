@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import userRoutes from './userRoutes'; // Importa as rotas de usuário
+import authRoutes from './authRoutes'; // Importa as rotas de autenticação
 
 const router = Router();
 
@@ -10,5 +11,6 @@ router.get('/health', (req, res) => {
 
 // Agrupa as rotas de usuários sob o prefixo /users
 router.use('/users', userRoutes);
+router.use('/auth', authRoutes); // Usa as rotas de autenticação no caminho /auth
 
 export default router; 
