@@ -1,0 +1,40 @@
+{
+  "name": "advocacia-database",
+  "version": "1.0.0",
+  "description": "Database management for Advocacia system",
+  "scripts": {
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f postgres",
+    "docker:restart": "docker-compose restart",
+    "prisma:migrate": "npx prisma migrate dev",
+    "prisma:studio": "npx prisma studio",
+    "prisma:generate": "npx prisma generate",
+    "prisma:reset": "npx prisma migrate reset",
+    "seed": "npx ts-node prisma/seed.ts",
+    "db:setup": "npm run docker:up && sleep 5 && npm run prisma:migrate && npm run seed",
+    "db:reset": "npm run docker:down && npm run docker:up && sleep 5 && npm run prisma:reset"
+  },
+  "keywords": [
+    "database",
+    "postgresql",
+    "prisma",
+    "docker"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.6.0",
+    "@types/bcrypt": "^5.0.2",
+    "bcrypt": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.3",
+    "prisma": "^6.6.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "prisma": {
+    "seed": "npx ts-node prisma/seed.ts"
+  }
+}

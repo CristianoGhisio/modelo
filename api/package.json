@@ -7,9 +7,13 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "test": "jest",
-    "prisma:migrate": "npx prisma migrate dev",
-    "prisma:studio": "npx prisma studio",
-    "seed": "npx ts-node prisma/seed.ts"
+    "prisma:migrate": "cd ../database && npx prisma migrate dev",
+    "prisma:studio": "cd ../database && npx prisma studio",
+    "prisma:generate": "cd ../database && npx prisma generate",
+    "seed": "cd ../database && npx ts-node prisma/seed.ts",
+    "docker:up": "cd ../database && npm run docker:up",
+    "docker:down": "cd ../database && npm run docker:down",
+    "docker:logs": "cd ../database && npm run docker:logs"
   },
   "keywords": [],
   "author": "",
@@ -24,8 +28,8 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
+    "pg": "^8.12.0",
     "prisma": "^6.10.1",
-    "sqlite3": "^5.1.7",
     "zod": "^3.25.67"
   },
   "devDependencies": {
@@ -37,6 +41,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
     "@types/node": "^24.0.3",
+    "@types/pg": "^8.11.10",
     "@types/supertest": "^6.0.3",
     "jest": "^30.0.2",
     "nodemon": "^3.1.10",
