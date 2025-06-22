@@ -1,8 +1,3 @@
----
-description: 
-globs: 
-alwaysApply: true
----
 # 🚀 METODOLOGIA PRÁTICA IA - Resolução de Problemas com MCP Tools
 
 **Framework executável para máxima eficiência usando ferramentas modernas MCP**
