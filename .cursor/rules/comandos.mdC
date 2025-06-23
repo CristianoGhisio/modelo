@@ -1,0 +1,587 @@
+# 🚀 Guia de Comandos para Desenvolvimento Web
+
+<div align="center">
+
+**Referência completa de comandos para desenvolvimento web moderno**
+
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat&logo=nodedotjs&logoColor=white)
+![npm](https://img.shields.io/badge/npm-CB3837?style=flat&logo=npm&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=flat&logo=prisma&logoColor=white)
+
+</div>
+
+## 📋 Índice
+
+- [🏗️ Setup e Inicialização](#️-setup-e-inicialização)
+- [📦 Gerenciamento de Pacotes](#-gerenciamento-de-pacotes)
+- [🗄️ Banco de Dados (Prisma)](#️-banco-de-dados-prisma)
+- [🔧 Desenvolvimento](#-desenvolvimento)
+- [📝 Controle de Versão (Git)](#-controle-de-versão-git)
+- [🏗️ Build e Deploy](#️-build-e-deploy)
+- [🧪 Testes](#-testes)
+- [🐳 Docker e Containerização](#-docker-e-containerização)
+- [🛠️ Utilitários e Ferramentas](#️-utilitários-e-ferramentas)
+- [🔍 Troubleshooting](#-troubleshooting)
+- [⚡ Workflows Comuns](#-workflows-comuns)
+- [🎯 Aliases Úteis](#-aliases-úteis)
+
+---
+
+## 🏗️ Setup e Inicialização
+
+### 🚀 Criação de Projetos
+
+| Comando | Finalidade | Exemplo | Observações |
+|---------|------------|---------|-------------|
+| `npx create-next-app@latest` | Cria projeto Next.js | `npx create-next-app@latest my-app --typescript --tailwind` | ✅ Recomendado para React/Next.js |
+| `npx create-react-app` | Cria projeto React | `npx create-react-app my-app --template typescript` | 📦 CRA tradicional |
+| `npx create-vite@latest` | Cria projeto Vite | `npx create-vite@latest my-app --template react-ts` | ⚡ Mais rápido que CRA |
+| `npm init` | Inicializa projeto Node.js | `npm init -y` | 📄 Cria package.json |
+| `npx prisma init` | Inicializa Prisma | `npx prisma init --datasource-provider sqlite` | 🗄️ Setup inicial do Prisma |
+
+### 🔧 Configuração Inicial
+
+| Comando | Finalidade | Quando Usar |
+|---------|------------|-------------|
+| `git init` | Inicializa repositório Git | 📁 Primeiro passo após criar projeto |
+| `npm install` | Instala dependências | 📦 Após clonar projeto |
+| `cp .env.example .env` | Copia arquivo de ambiente | ⚙️ Configuração de variáveis |
+| `npx prisma generate` | Gera Prisma Client | 🗄️ Após setup do Prisma |
+| `code .` | Abre projeto no VS Code | 💻 Para desenvolvimento |
+
+---
+
+## 📦 Gerenciamento de Pacotes
+
+### 📥 NPM - Node Package Manager
+
+| Comando | Finalidade | Exemplo | Observações |
+|---------|------------|---------|-------------|
+| `npm install` | Instala todas as dependências | `npm install` | 📦 Lê package.json |
+| `npm install <pacote>` | Instala pacote específico | `npm install react` | ➕ Adiciona a dependencies |
+| `npm install -D <pacote>` | Instala como dev dependency | `npm install -D typescript` | 🛠️ Apenas para desenvolvimento |
+| `npm install -g <pacote>` | Instala globalmente | `npm install -g npm@latest` | 🌍 Disponível em todo sistema |
+| `npm uninstall <pacote>` | Remove pacote | `npm uninstall lodash` | ➖ Remove do projeto |
+| `npm update` | Atualiza pacotes | `npm update` | 🔄 Atualiza dependências |
+| `npm outdated` | Lista pacotes desatualizados | `npm outdated` | 📊 Verifica versões |
+| `npm audit` | Verifica vulnerabilidades | `npm audit --fix` | 🔒 Segurança |
+| `npm list` | Lista pacotes instalados | `npm list --depth=0` | 📋 Visualiza dependências |
+| `npm cache clean --force` | Limpa cache | `npm cache clean --force` | 🧹 Resolve problemas |
+
+### 🧶 Yarn - Package Manager Alternativo
+
+| Comando | Finalidade | Equivalente NPM | Vantagens |
+|---------|------------|-----------------|-----------|
+| `yarn` | Instala dependências | `npm install` | ⚡ Mais rápido |
+| `yarn add <pacote>` | Instala pacote | `npm install <pacote>` | 🔒 Lock file confiável |
+| `yarn add -D <pacote>` | Dev dependency | `npm install -D <pacote>` | 📦 Melhor resolução |
+| `yarn remove <pacote>` | Remove pacote | `npm uninstall <pacote>` | 🧹 Limpeza automática |
+| `yarn upgrade` | Atualiza pacotes | `npm update` | 🔄 Atualização inteligente |
+
+### 📦 PNPM - Package Manager Moderno
+
+| Comando | Finalidade | Vantagens | Quando Usar |
+|---------|------------|-----------|-------------|
+| `pnpm install` | Instala dependências | 💾 Economiza espaço em disco | 🏢 Monorepos |
+| `pnpm add <pacote>` | Instala pacote | ⚡ Instalação mais rápida | 🔗 Links simbólicos |
+| `pnpm remove <pacote>` | Remove pacote | 🧹 Limpeza eficiente | 📦 Projetos grandes |
+| `pnpm update` | Atualiza pacotes | 🔄 Atualização otimizada | ⚡ Performance |
+
+---
+
+## 🗄️ Banco de Dados (Prisma)
+
+### 🚀 Setup e Configuração
+
+| Comando | Finalidade | Quando Usar | Observações |
+|---------|------------|-------------|-------------|
+| `npx prisma init` | Inicializa Prisma | 🆕 Novo projeto | Cria schema.prisma e .env |
+| `npx prisma generate` | Gera Prisma Client | 📝 Após alterar schema | Atualiza tipos TypeScript |
+| `npx prisma db pull` | Importa schema existente | 🔄 Banco já criado | Introspecção de banco |
+| `npx prisma format` | Formata schema | 🎨 Melhora legibilidade | Auto-formatação |
+| `npx prisma validate` | Valida schema | ✅ Verifica erros | Antes de migrations |
+
+### 🔄 Migrações
+
+| Comando | Finalidade | Ambiente | Exemplo |
+|---------|------------|----------|---------|
+| `npx prisma migrate dev` | Cria e aplica migração | 🛠️ Desenvolvimento | `npx prisma migrate dev --name add_user_table` |
+| `npx prisma migrate deploy` | Aplica migrações | 🚀 Produção | Para CI/CD |
+| `npx prisma migrate reset` | Reseta banco | 🧪 Testes/Dev | ⚠️ Remove todos os dados |
+| `npx prisma migrate status` | Status das migrações | 📊 Diagnóstico | Verifica pendências |
+| `npx prisma db push` | Sincroniza schema | 🚀 Prototipagem | Sem criar migração |
+
+### 🎯 Desenvolvimento e Debug
+
+| Comando | Finalidade | URL | Recursos |
+|---------|------------|-----|----------|
+| `npx prisma studio` | Interface gráfica | `http://localhost:5555` | 👀 Visualizar dados |
+| `npx prisma db seed` | Popula banco | - | 🌱 Dados iniciais |
+| `npx prisma db execute --file script.sql` | Executa SQL | - | 🔧 Scripts customizados |
+
+---
+
+## 🔧 Desenvolvimento
+
+### 🚀 Execução e Build
+
+| Framework | Comando | Finalidade | Porta Padrão |
+|-----------|---------|------------|--------------|
+| **Next.js** | `npm run dev` | Desenvolvimento | `:3000` |
+| **Next.js** | `npm run build` | Build produção | - |
+| **Next.js** | `npm run start` | Produção | `:3000` |
+| **React** | `npm start` | Desenvolvimento | `:3000` |
+| **Vite** | `npm run dev` | Desenvolvimento | `:5173` |
+| **Node.js** | `node server.js` | Execução direta | Configurável |
+| **TypeScript** | `npx tsc` | Compilação | - |
+| **TypeScript** | `npx ts-node script.ts` | Execução direta | - |
+
+### 🔧 Ferramentas de Desenvolvimento
+
+| Comando | Finalidade | Configuração | Observações |
+|---------|------------|--------------|-------------|
+| `npx nodemon server.js` | Auto-restart | `nodemon.json` | 🔄 Reinicia automaticamente |
+| `npx concurrently "cmd1" "cmd2"` | Múltiplos comandos | - | 🔀 Execução paralela |
+| `npx cross-env NODE_ENV=production` | Variáveis ambiente | - | 🌍 Cross-platform |
+
+### 🎨 Linting e Formatação
+
+| Ferramenta | Comando | Finalidade | Configuração |
+|------------|---------|------------|--------------|
+| **ESLint** | `npx eslint .` | Análise de código | `.eslintrc.js` |
+| **ESLint** | `npx eslint . --fix` | Correção automática | - |
+| **Prettier** | `npx prettier --write .` | Formatação | `.prettierrc` |
+| **Prettier** | `npx prettier --check .` | Verificação | - |
+
+---
+
+## 📝 Controle de Versão (Git)
+
+### 🚀 Setup e Configuração
+
+| Comando | Finalidade | Exemplo | Observações |
+|---------|------------|---------|-------------|
+| `git init` | Inicializa repositório | `git init` | 📁 Cria .git |
+| `git clone <url>` | Clona repositório | `git clone https://github.com/user/repo.git` | 📥 Download completo |
+| `git remote add origin <url>` | Adiciona remote | `git remote add origin <url>` | 🔗 Conecta com GitHub |
+| `git config --global user.name "Nome"` | Configura usuário | - | ⚙️ Configuração global |
+| `git config --global user.email "email"` | Configura email | - | 📧 Para commits |
+
+### 📦 Workflow Básico
+
+| Comando | Finalidade | Exemplo | Status |
+|---------|------------|---------|--------|
+| `git status` | Verifica status | `git status` | 📊 Estado atual |
+| `git add <arquivo>` | Adiciona ao stage | `git add .` | ➕ Preparar commit |
+| `git commit -m "mensagem"` | Cria commit | `git commit -m "feat: add login"` | 💾 Salva alterações |
+| `git push origin <branch>` | Envia para remoto | `git push origin main` | ⬆️ Upload |
+| `git pull origin <branch>` | Atualiza do remoto | `git pull origin main` | ⬇️ Download |
+
+### 🌿 Branches e Merging
+
+| Comando | Finalidade | Exemplo | Workflow |
+|---------|------------|---------|----------|
+| `git branch <nome>` | Cria branch | `git branch feature/login` | 🌿 Nova funcionalidade |
+| `git checkout <branch>` | Muda branch | `git checkout main` | 🔄 Troca contexto |
+| `git checkout -b <nome>` | Cria e muda | `git checkout -b hotfix/bug` | ⚡ Atalho |
+| `git merge <branch>` | Mescla branch | `git merge feature/login` | 🔀 Integração |
+| `git branch -d <nome>` | Deleta branch | `git branch -d feature/login` | 🗑️ Limpeza |
+
+### 🔍 Histórico e Debug
+
+| Comando | Finalidade | Opções Úteis | Quando Usar |
+|---------|------------|--------------|-------------|
+| `git log` | Histórico commits | `--oneline --graph` | 📜 Ver histórico |
+| `git diff` | Diferenças | `--staged` | 👀 Ver mudanças |
+| `git show <commit>` | Detalhes commit | - | 🔍 Investigação |
+| `git blame <arquivo>` | Autor por linha | - | 👤 Rastrear código |
+| `git reset --hard <commit>` | Volta para commit | ⚠️ Destrutivo | 🔄 Reverter |
+
+### 🏷️ Tags e Releases
+
+| Comando | Finalidade | Exemplo | Uso |
+|---------|------------|---------|-----|
+| `git tag <nome>` | Cria tag | `git tag v1.0.0` | 🏷️ Marcar versão |
+| `git tag -a <nome> -m "msg"` | Tag anotada | `git tag -a v1.0.0 -m "Release v1.0.0"` | 📝 Com descrição |
+| `git push origin <tag>` | Envia tag | `git push origin v1.0.0` | ⬆️ Publica versão |
+| `git push origin --tags` | Envia todas tags | - | 🏷️ Todas as versões |
+
+---
+
+## 🏗️ Build e Deploy
+
+### 📦 Build Commands
+
+| Projeto | Comando | Output | Observações |
+|---------|---------|--------|-------------|
+| **Next.js** | `npm run build` | `.next/` | 🚀 Otimizado para produção |
+| **React** | `npm run build` | `build/` | 📦 Static files |
+| **Vite** | `npm run build` | `dist/` | ⚡ Build rápido |
+| **TypeScript** | `npx tsc` | Configurável | 🔧 Compilação TS |
+
+### 🚀 Deploy Platforms
+
+| Plataforma | Comando | Configuração | Gratuito |
+|------------|---------|--------------|----------|
+| **Vercel** | `npx vercel` | `vercel.json` | ✅ Sim |
+| **Netlify** | `npx netlify deploy` | `netlify.toml` | ✅ Sim |
+| **Heroku** | `git push heroku main` | `Procfile` | ✅ Limitado |
+| **Railway** | `railway deploy` | - | ✅ Sim |
+
+### 📊 Análise e Otimização
+
+| Comando | Finalidade | Framework | Output |
+|---------|------------|-----------|--------|
+| `npx next build --analyze` | Análise bundle | Next.js | 📊 Bundle size |
+| `npx webpack-bundle-analyzer` | Análise Webpack | React/Webpack | 📈 Visualização |
+| `npm run build -- --report` | Relatório build | Vue/Vite | 📋 Relatório |
+
+---
+
+## 🧪 Testes
+
+### 🔬 Frameworks de Teste
+
+| Framework | Comando | Finalidade | Configuração |
+|-----------|---------|------------|--------------|
+| **Jest** | `npx jest` | Testes unitários | `jest.config.js` |
+| **Jest** | `npx jest --watch` | Modo watch | - |
+| **Jest** | `npx jest --coverage` | Cobertura | - |
+| **Cypress** | `npx cypress open` | E2E interativo | `cypress.config.js` |
+| **Cypress** | `npx cypress run` | E2E headless | - |
+| **Playwright** | `npx playwright test` | E2E moderno | `playwright.config.ts` |
+| **Vitest** | `npx vitest` | Testes Vite | `vitest.config.ts` |
+
+### 🎯 Tipos de Teste
+
+| Tipo | Comando | Escopo | Exemplo |
+|------|---------|--------|---------|
+| **Unit** | `npm test` | Funções/Componentes | Testar função pura |
+| **Integration** | `npm run test:integration` | APIs/Módulos | Testar API endpoint |
+| **E2E** | `npm run test:e2e` | Fluxo completo | Testar login completo |
+| **Visual** | `npm run test:visual` | UI/Screenshots | Testar aparência |
+
+---
+
+## 🐳 Docker e Containerização
+
+### 🏗️ Dockerfile e Images
+
+| Comando | Finalidade | Exemplo | Observações |
+|---------|------------|---------|-------------|
+| `docker build -t <nome> .` | Constrói imagem | `docker build -t my-app:latest .` | 🏗️ Usa Dockerfile |
+| `docker run -p <local>:<container> <image>` | Executa container | `docker run -p 3000:3000 my-app` | 🚀 Mapeia portas |
+| `docker ps` | Lista containers | `docker ps -a` | 📋 Todos os containers |
+| `docker stop <container>` | Para container | `docker stop my-app` | ⏹️ Graceful stop |
+| `docker rm <container>` | Remove container | `docker rm my-app` | 🗑️ Limpeza |
+| `docker images` | Lista imagens | - | 📦 Imagens locais |
+| `docker rmi <image>` | Remove imagem | `docker rmi my-app:latest` | 🗑️ Limpeza |
+
+### 🐙 Docker Compose
+
+| Comando | Finalidade | Arquivo | Uso |
+|---------|------------|---------|-----|
+| `docker-compose up` | Inicia serviços | `docker-compose.yml` | 🚀 Desenvolvimento |
+| `docker-compose up -d` | Inicia em background | - | 🔄 Produção |
+| `docker-compose down` | Para e remove | - | ⏹️ Limpeza completa |
+| `docker-compose logs` | Visualiza logs | - | 📋 Debug |
+| `docker-compose exec <service> bash` | Acessa container | - | 🔧 Debug/Manutenção |
+
+### 🌊 Exemplo Docker Compose
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - .:/app
+      - /app/node_modules
+  
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: myapp
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+```
+
+---
+
+## 🛠️ Utilitários e Ferramentas
+
+### 🔍 Análise e Debug
+
+| Comando | Finalidade | Output | Quando Usar |
+|---------|------------|--------|-------------|
+| `npx depcheck` | Dependências não usadas | Lista | 🧹 Limpeza projeto |
+| `npx npm-check-updates` | Atualizar package.json | Sugestões | 🔄 Manter atualizado |
+| `npx bundle-analyzer` | Análise de bundle | Gráfico | 📊 Otimização |
+| `npx speed-measure-webpack-plugin` | Tempo de build | Relatório | ⏱️ Performance |
+| `npx why-is-node-running` | Debug memory leaks | Logs | 🐛 Memory debug |
+
+### 📊 Monitoramento e Performance
+
+| Comando | Finalidade | Framework | Métricas |
+|---------|------------|-----------|----------|
+| `npx lighthouse <url>` | Auditoria web | Universal | Core Web Vitals |
+| `npx next build --analyze` | Bundle analysis | Next.js | Bundle size |
+| `npm run build -- --report` | Build report | Vite/Vue | Performance |
+
+### 🔧 Geração de Código
+
+| Comando | Finalidade | Exemplo | Framework |
+|---------|------------|---------|-----------|
+| `npx plop` | Gerador de templates | `npx plop component` | Universal |
+| `npx hygen` | Gerador de código | `npx hygen component new` | Universal |
+| `npx create-component` | Componente React | - | React |
+
+---
+
+## 🔍 Troubleshooting
+
+### 🚨 Problemas Comuns
+
+| Problema | Comando | Quando Usar | Observações |
+|----------|---------|-------------|-------------|
+| **Cache corrompido** | `npm cache clean --force` | Erros de instalação | 🧹 Limpa cache npm |
+| **Node modules corrompido** | `rm -rf node_modules && npm install` | Dependências quebradas | 🔄 Reinstala tudo |
+| **Lock file conflicts** | `rm package-lock.json && npm install` | Conflitos de merge | ⚠️ Pode alterar versões |
+| **Port em uso** | `lsof -ti:3000 \| xargs kill -9` | Porta ocupada | 🔌 Mata processo |
+| **Permissões npm** | `npm config set prefix ~/.npm-global` | Erro de permissão | 🔐 Fix permissões |
+
+### 🔧 Debug Commands
+
+| Comando | Finalidade | Output | Debug Level |
+|---------|------------|--------|-------------|
+| `npm run dev -- --verbose` | Logs detalhados | Console | 📝 Verbose |
+| `DEBUG=* npm run dev` | Debug completo | Console | 🔍 Máximo |
+| `node --inspect server.js` | Debug Node.js | Chrome DevTools | 🐛 Inspector |
+| `npm run build -- --debug` | Debug build | Console | 🏗️ Build issues |
+
+### 📊 Diagnóstico
+
+| Comando | Finalidade | Informações | Quando Usar |
+|---------|------------|-------------|-------------|
+| `node --version` | Versão Node.js | v18.x.x | ✅ Verificar compatibilidade |
+| `npm --version` | Versão npm | 9.x.x | ✅ Verificar ferramenta |
+| `npx envinfo` | Info do ambiente | Sistema completo | 🔍 Diagnóstico completo |
+| `npm doctor` | Verificar npm | Status | 🏥 Health check |
+
+---
+
+## ⚡ Workflows Comuns
+
+### 🚀 Novo Projeto Full-Stack
+
+```bash
+# 1. Criar projeto Next.js
+npx create-next-app@latest my-app --typescript --tailwind
+
+# 2. Navegar e instalar dependências
+cd my-app
+npm install @prisma/client prisma
+
+# 3. Setup Prisma
+npx prisma init --datasource-provider sqlite
+
+# 4. Configurar Git
+git init
+git add .
+git commit -m "🎉 Initial commit"
+
+# 5. Desenvolvimento
+npm run dev
+```
+
+### 🔄 Deploy Workflow
+
+```bash
+# 1. Build e teste
+npm run build
+npm run test
+
+# 2. Commit final
+git add .
+git commit -m "🚀 Ready for deploy"
+
+# 3. Deploy
+git push origin main
+npx vercel --prod
+```
+
+### 🐛 Debug Workflow
+
+```bash
+# 1. Verificar status
+git status
+npm run lint
+
+# 2. Limpar cache
+npm cache clean --force
+rm -rf node_modules
+npm install
+
+# 3. Testar
+npm run dev
+npm run test
+```
+
+### 📦 Update Workflow
+
+```bash
+# 1. Verificar atualizações
+npm outdated
+npx npm-check-updates
+
+# 2. Atualizar
+npm update
+npx npm-check-updates -u
+npm install
+
+# 3. Testar e commit
+npm run test
+git add .
+git commit -m "⬆️ Update dependencies"
+```
+
+---
+
+## 🎯 Aliases Úteis
+
+### 🚀 Git Aliases
+
+```bash
+# Adicionar ao ~/.gitconfig
+[alias]
+  st = status
+  co = checkout
+  br = branch
+  ci = commit
+  ca = commit -a
+  ps = push
+  pl = pull
+  lg = log --oneline --graph --decorate --all
+  unstage = reset HEAD --
+  last = log -1 HEAD
+  visual = !gitk
+```
+
+### 📦 NPM Scripts Úteis
+
+```json
+{
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "db:migrate": "prisma migrate dev",
+    "db:generate": "prisma generate",
+    "db:studio": "prisma studio",
+    "db:seed": "prisma db seed",
+    "clean": "rm -rf .next node_modules",
+    "fresh": "npm run clean && npm install",
+    "analyze": "cross-env ANALYZE=true npm run build"
+  }
+}
+```
+
+### 🔧 Shell Aliases
+
+```bash
+# Adicionar ao ~/.bashrc ou ~/.zshrc
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+# Git aliases
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git pull'
+alias gco='git checkout'
+alias gbr='git branch'
+
+# npm aliases
+alias ni='npm install'
+alias nid='npm install --save-dev'
+alias nig='npm install -g'
+alias nr='npm run'
+alias ns='npm start'
+alias nt='npm test'
+alias nb='npm run build'
+alias nd='npm run dev'
+
+# Docker aliases
+alias d='docker'
+alias dc='docker-compose'
+alias dcu='docker-compose up'
+alias dcd='docker-compose down'
+alias dcl='docker-compose logs'
+```
+
+---
+
+## 📚 Recursos Adicionais
+
+### 🔗 Links Úteis
+
+- **[npm Documentation](https://docs.npmjs.com/)**
+- **[Prisma Documentation](https://www.prisma.io/docs/)**
+- **[Next.js Documentation](https://nextjs.org/docs)**
+- **[Git Documentation](https://git-scm.com/doc)**
+- **[Docker Documentation](https://docs.docker.com/)**
+
+### 📖 Cheat Sheets
+
+- **[Git Cheat Sheet](https://education.github.com/git-cheat-sheet-education.pdf)**
+- **[npm Cheat Sheet](https://devhints.io/npm)**
+- **[Docker Cheat Sheet](https://dockerlux.github.io/pdf/cheat-sheet-v2.pdf)**
+
+### 🛠️ Ferramentas Recomendadas
+
+| Categoria | Ferramenta | Finalidade |
+|-----------|------------|------------|
+| **Editor** | VS Code | Editor principal |
+| **Terminal** | Oh My Zsh | Terminal melhorado |
+| **Git UI** | GitKraken | Interface gráfica Git |
+| **API** | Postman/Insomnia | Teste de APIs |
+| **DB** | Prisma Studio | Interface banco |
+
+---
+
+<div align="center">
+
+**[⬆ Voltar ao topo](#-guia-de-comandos-para-desenvolvimento-web)**
+
+📝 **Última atualização:** 2024-12-23
+
+Feito com ❤️ para desenvolvedores
+
+</div>
